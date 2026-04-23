@@ -117,6 +117,7 @@ body:has(#app.visible){overflow:hidden}
 .role-ops{background:rgba(168,85,247,0.15);color:#a855f7;border:1px solid rgba(168,85,247,0.2)}
 .role-hr{background:rgba(236,72,153,0.15);color:#ec4899;border:1px solid rgba(236,72,153,0.2)}
 .role-ld{background:rgba(34,211,238,0.15);color:#22d3ee;border:1px solid rgba(34,211,238,0.2)}
+/* Senior Media Analyst reuses role-ld (cyan) */
 
 /* ─── MAIN ─── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
@@ -459,12 +460,8 @@ body:has(#app.visible){overflow:hidden}
       <div class="input-group"><label>Email</label><input type="email" id="login-email" placeholder="you@yourcompany.com"></div>
       <div class="input-group"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn btn-primary btn-full mt8" onclick="doLogin()">Sign In</button>
-      <div style="margin-top:16px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r);padding:10px 14px;font-size:11px;color:var(--accent2)">
-        <strong>Demo — ManComm:</strong> coo@rythmos.sg · ops@rythmos.sg · hr@rythmos.sg · ld@rythmos.sg<br>
-        <strong>SG Gov:</strong> am.gov · csm.gov · tl.gov · a.gov @rythmos.sg<br>
-        <strong>AUNZ:</strong> am.aunz · tl.aunz · a.aunz @rythmos.sg<br>
-        <strong>EMEA:</strong> am.emea · tl.emea · a.emea @rythmos.sg<br>
-        <span style="color:var(--text3)">Any password works for demo</span>
+      <div style="margin-top:16px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 14px;font-size:11px;color:var(--text2)">
+        Don't have an account? Click <strong>Register</strong> above to create one.
       </div>
     </div>
     <div id="reg-form" style="display:none">
@@ -473,6 +470,7 @@ body:has(#app.visible){overflow:hidden}
       <div class="input-group"><label>Role</label>
         <select id="reg-role" onchange="toggleRegTeam()">
           <option value="Media Analyst">Media Analyst</option>
+          <option value="Senior Media Analyst">Senior Media Analyst</option>
           <option value="Team Leader">Team Leader</option>
           <option value="Client Success Manager">Client Success Manager</option>
           <option value="Analyst Manager">Analyst Manager</option>
@@ -661,6 +659,12 @@ const ROLES = {
     canViewPerformance: false, canDownloadReports: true, canSetSOPPerAccount: false,
     canViewAllTeams: false, canManageAllTeams: false,
     color: '#2fd87e', tag: 'role-analyst', label: 'Analyst'
+  },
+  'Senior Media Analyst': {
+    canManageAccounts: false, canManageSOP: false, canManageTeam: false,
+    canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: false,
+    canViewAllTeams: false, canManageAllTeams: false,
+    color: '#22d3ee', tag: 'role-ld', label: 'Sr. Analyst'
   }
 };
 
@@ -786,7 +790,7 @@ const DB = {
       if (team.data) DB.set('team', team.data.map(dbToUser));
       if (acts.data) DB.set('activity', acts.data.map(r=>({id:r.id,icon:r.icon,text:r.text,user:r.username,role:r.role,time:r.time})));
       if (notifs.data) DB.set('notifications', notifs.data);
-      if (users.data) DB.set('users', users.data.map(dbToUser));
+      if (users.data) DB.set('users', users.data.map(dbToUser)); // includes passwordHash via dbToUser
       if (timelogs.data) DB.set('timelogs', timelogs.data);
       if (leaves.data) DB.set('leaves', leaves.data);
     } catch(e) { console.warn('Supabase load failed, using localStorage', e); }
@@ -825,7 +829,8 @@ function dbToUser(r) {
     id: r.id, name: r.name, email: r.email, role: r.role,
     teamId: r.team_id, color: r.color,
     profilePicture: r.profile_picture, archived: r.archived,
-    online: false, joined: r.created_at
+    online: false, joined: r.created_at,
+    passwordHash: r.password_hash || null
   };
 }
 
@@ -921,62 +926,16 @@ function loadState() {
     STATE.activity = DB.get('activity', []);
     STATE.notifications = DB.get('notifications', []);
     if (!STATE.team.find(m => m.id === u.id)) {
+      // Ensure logged-in user is reflected in team list
       STATE.team.push({ id: u.id, name: u.name, role: u.role, email: u.email, color: u.color, teamId: u.teamId || null, online: true, joined: new Date().toISOString() });
       DB.set('team', STATE.team);
     }
-    if (STATE.accounts.length === 0) seedDemoAccounts();
+    // No demo account seeding — accounts start empty
   }
 }
 
-function seedDemoAccounts() {
-  const demos = [
-    // SG Government Team
-    { name: 'IMDA - Infocomm Media Development Authority', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'MHA - Ministry of Home Affairs', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'WSG - Workforce Singapore', type: 'SM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'ACRA - Accounting and Corporate Regulatory Authority (MSM)', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'MSF - Ministry of Social and Family Development', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'IRAS - Inland Revenue Authority of Singapore', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'Singapore Customs', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'AGC - Attorney-General\'s Chamber (MSM)', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'CNB - Central Narcotics Bureau', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'AGC - Attorney-General\'s Chamber (SM)', type: 'SM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    { name: 'MOF - Ministry of Finance (Integrated)', type: 'Integrated Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_gov' },
-    // SG Newsletter Team
-    { name: 'IMDA - Whatsapp Blast (9AM)', type: 'SM Report', Cadence: 'Daily', status: 'Active', teamId: 'sg_newsletter' },
-    { name: 'IMDA - Whatsapp Blast (3PM)', type: 'SM Report', Cadence: 'Daily', status: 'Active', teamId: 'sg_newsletter' },
-    { name: 'SM Centralized Trawling', type: 'SM Report', Cadence: 'Weekly', status: 'Active', teamId: 'sg_newsletter' },
-    // SG Reports Team
-    { name: 'PA - People\'s Association (CDC) - HQ + SE', type: 'Integrated Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_reports' },
-    { name: 'PA - People\'s Association (CDC) Quarterly', type: 'Integrated Report', Cadence: 'Quarterly', status: 'Active', teamId: 'sg_reports' },
-    { name: 'PA Chingay (2025 to 2026 edition)', type: 'Integrated Report', Cadence: 'Annual', status: 'Active', teamId: 'sg_reports' },
-    { name: 'NEA - National Environment Agency', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'sg_reports' },
-    // AUNZ Team
-    { name: 'David Jones', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'aunz' },
-    { name: 'NRMA', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'aunz' },
-    { name: 'Macquarie University', type: 'MSM Report', Cadence: 'Quarterly', status: 'Active', teamId: 'aunz' },
-    { name: 'Woodside', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'aunz' },
-    { name: 'ANZ Bank', type: 'Integrated Report', Cadence: 'Monthly', status: 'Active', teamId: 'aunz' },
-    { name: 'CBH', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'aunz' },
-    { name: 'University of Melbourne', type: 'MSM Report', Cadence: 'Quarterly', status: 'Active', teamId: 'aunz' },
-    // EMEA Team
-    { name: 'Franck Muller', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'emea' },
-    { name: 'Hesta', type: 'Integrated Report', Cadence: 'Quarterly', status: 'Active', teamId: 'emea' },
-    { name: 'Phillip Morris International', type: 'MSM Report', Cadence: 'Monthly', status: 'Active', teamId: 'emea' },
-  ];
-  demos.forEach((d, i) => {
-    STATE.accounts.push({
-      id: 'acc_demo_' + i,
-      name: d.name, type: d.type, Cadence: d.Cadence, status: d.status,
-      teamId: d.teamId,
-      analysts: [], color: COLORS[i % COLORS.length],
-      notes: '', created: new Date().toISOString(),
-      sopChecked: {}, sopSteps: null,
-      profilePicture: null
-    });
-  });
-  DB.set('accounts', STATE.accounts);
-}
+// No demo data seeding — clean slate, all data comes from actual user registration and account creation
+function seedDemoAccounts() { /* intentionally empty — no demo data */ }
 
 function saveAccounts() { saveAccountsDB().catch(()=>{}); }
 function saveTeam() { saveTeamDB().catch(()=>{}); }
@@ -1036,34 +995,8 @@ function markAllRead() {
 // ═══════════════════════════════════════════════
 // AUTH
 // ═══════════════════════════════════════════════
-const DEMO_USERS = [
-  // ManComm (cross-team)
-  { email: 'coo@rythmos.sg',      role: 'COO',                    name: 'Chief Operating Officer', color: '#f04b4b',  teamId: null },
-  { email: 'ops@rythmos.sg',      role: 'Operations Manager',     name: 'Ops Manager',             color: '#a855f7',  teamId: null },
-  { email: 'hr@rythmos.sg',       role: 'HR Manager',             name: 'HR Manager',              color: '#ec4899',  teamId: null },
-  { email: 'ld@rythmos.sg',       role: 'Learning and Development', name: 'L&D Manager',           color: '#22d3ee',  teamId: null },
-  // SG Government Team
-  { email: 'am.gov@rythmos.sg',   role: 'Analyst Manager',        name: 'AM (SG Gov)',             color: '#7c6ef5',  teamId: 'sg_gov' },
-  { email: 'csm.gov@rythmos.sg',  role: 'Client Success Manager', name: 'CSM (SG Gov)',            color: '#38b4f5',  teamId: 'sg_gov' },
-  { email: 'tl.gov@rythmos.sg',   role: 'Team Leader',            name: 'TL (SG Gov)',             color: '#f5a623',  teamId: 'sg_gov' },
-  { email: 'a.gov@rythmos.sg',    role: 'Media Analyst',          name: 'Analyst (SG Gov)',        color: '#2fd87e',  teamId: 'sg_gov' },
-  // SG Newsletter Team
-  { email: 'am.news@rythmos.sg',  role: 'Analyst Manager',        name: 'AM (Newsletter)',         color: '#7c6ef5',  teamId: 'sg_newsletter' },
-  { email: 'a.news@rythmos.sg',   role: 'Media Analyst',          name: 'Analyst (Newsletter)',    color: '#2fd87e',  teamId: 'sg_newsletter' },
-  // SG Reports Team
-  { email: 'am.rep@rythmos.sg',   role: 'Analyst Manager',        name: 'AM (SG Reports)',         color: '#7c6ef5',  teamId: 'sg_reports' },
-  { email: 'a.rep@rythmos.sg',    role: 'Media Analyst',          name: 'Analyst (SG Reports)',    color: '#2fd87e',  teamId: 'sg_reports' },
-  // AUNZ Team
-  { email: 'am.aunz@rythmos.sg',  role: 'Analyst Manager',        name: 'AM (AUNZ)',               color: '#7c6ef5',  teamId: 'aunz' },
-  { email: 'csm.aunz@rythmos.sg', role: 'Client Success Manager', name: 'CSM (AUNZ)',              color: '#38b4f5',  teamId: 'aunz' },
-  { email: 'tl.aunz@rythmos.sg',  role: 'Team Leader',            name: 'TL (AUNZ)',               color: '#f5a623',  teamId: 'aunz' },
-  { email: 'a.aunz@rythmos.sg',   role: 'Media Analyst',          name: 'Analyst (AUNZ)',          color: '#2fd87e',  teamId: 'aunz' },
-  // EMEA Team
-  { email: 'am.emea@rythmos.sg',  role: 'Analyst Manager',        name: 'AM (EMEA)',               color: '#7c6ef5',  teamId: 'emea' },
-  { email: 'csm.emea@rythmos.sg', role: 'Client Success Manager', name: 'CSM (EMEA)',              color: '#38b4f5',  teamId: 'emea' },
-  { email: 'tl.emea@rythmos.sg',  role: 'Team Leader',            name: 'TL (EMEA)',               color: '#f5a623',  teamId: 'emea' },
-  { email: 'a.emea@rythmos.sg',   role: 'Media Analyst',          name: 'Analyst (EMEA)',          color: '#2fd87e',  teamId: 'emea' },
-];
+// No demo users — all users must register first
+const DEMO_USERS = [];
 
 function switchTab(tab) {
   document.querySelectorAll('.auth-tab').forEach((t, i) => t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1)));
@@ -1086,37 +1019,50 @@ async function doLogin() {
   showNotif('Signing in…', 'info');
   // Try Supabase first
   let user = null;
+  let storedPass = null;
   try {
     const { data } = await supa.from('users').select('*').eq('email', email).maybeSingle();
-    if (data) user = dbToUser(data);
+    if (data) {
+      user = dbToUser(data);
+      storedPass = data.password_hash || null;
+    }
   } catch(e) {}
 
   // fallback to localStorage cache
   if (!user) {
     let users = DB.get('users', []);
-    user = users.find(u => u.email === email);
+    const found = users.find(u => u.email === email);
+    if (found) {
+      user = found;
+      storedPass = found.passwordHash || null;
+    }
+  }
+  if (!user) {
+    showNotif('No account found. Please register first.', 'error');
+    return;
   }
 
-  // create from demo or new
-  if (!user) {
-    const demo = DEMO_USERS.find(d => d.email === email);
-    let users = DB.get('users', []);
-    if (demo) {
-      user = { id: 'user_' + Date.now(), ...demo };
-    } else {
-      const name = email.split('.')[0].replace(/\b\w/g, c=>c.toUpperCase());
-      user = { id: 'user_' + Date.now(), name, email, role: 'Media Analyst', color: COLORS[users.length % COLORS.length], teamId: null };
-    }
-    users.push(user);
-    DB.set('users', users);
-    // sync to Supabase
-    supa.from('users').upsert(userToDb(user), {onConflict:'id'}).catch(()=>{});
+  // Verify password (simple hash comparison)
+  const hashedInput = simpleHash(pass);
+  if (storedPass && storedPass !== hashedInput) {
+    showNotif('Incorrect password.', 'error');
+    return;
   }
 
   DB.set('current_user', user);
   STATE.currentUser = user;
   loadState();
   bootApp();
+}
+
+// Simple deterministic hash for password storage (not cryptographic, but better than plaintext)
+function simpleHash(str) {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash) + str.charCodeAt(i);
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return 'h' + Math.abs(hash).toString(36);
 }
 
 async function doRegister() {
@@ -1126,7 +1072,7 @@ async function doRegister() {
   const teamId = document.getElementById('reg-team').value || null;
   const pass = document.getElementById('reg-pass').value.trim();
   if (!name || !email || !pass) { showNotif('Please fill all fields', 'info'); return; }
-  if (pass.length < 6) { showNotif('Password too short', 'info'); return; }
+  if (pass.length < 6) { showNotif('Password too short (min 6 characters)', 'info'); return; }
 
   // Check Supabase for duplicate
   let existing = null;
@@ -1136,12 +1082,19 @@ async function doRegister() {
   let users = DB.get('users', []);
   if (users.find(u => u.email === email)) { showNotif('Email already registered', 'info'); return; }
 
-  const user = { id: 'user_' + Date.now(), name, email, role, teamId, color: COLORS[users.length % COLORS.length] };
+  const passwordHash = simpleHash(pass);
+  const user = { id: 'user_' + Date.now(), name, email, role, teamId, color: COLORS[users.length % COLORS.length], passwordHash };
   users.push(user);
   DB.set('users', users);
   DB.set('current_user', user);
-  // sync to Supabase
-  supa.from('users').upsert(userToDb(user), {onConflict:'id'}).catch(()=>{});
+  // Also add to team list so ManComm can see them
+  let team = DB.get('team', []);
+  if (!team.find(m => m.email === email)) {
+    team.push({ id: user.id, name, email, role, teamId, color: user.color, archived: false, online: true, joined: new Date().toISOString() });
+    DB.set('team', team);
+  }
+  // sync to Supabase (store password_hash in the db row)
+  supa.from('users').upsert({ ...userToDb(user), password_hash: passwordHash }, {onConflict:'id'}).catch(()=>{});
   STATE.currentUser = user;
   loadState();
   bootApp();
@@ -2304,7 +2257,7 @@ function renderTeam() {
 
 function inviteTeamMember() {
   const teamOptions = TEAMS.map(t => '<option value="' + t.id + '">' + t.icon + ' ' + t.name + '</option>').join('');
-  const allRoles = ['Media Analyst','Team Leader','Client Success Manager','Analyst Manager'].concat(isManComm() ? MANCOMM_ROLES : []);
+  const allRoles = ['Media Analyst','Senior Media Analyst','Team Leader','Client Success Manager','Analyst Manager'].concat(isManComm() ? MANCOMM_ROLES : []);
   const roleOptions = allRoles.map(r => '<option value="' + r + '">' + r + '</option>').join('');
   const defaultTeamId = STATE.currentUser.teamId || '';
   openModal('Invite Team Member', 'Add a colleague to your workspace',
@@ -2336,7 +2289,7 @@ function doInvite() {
 function editMember(id) {
   const m = STATE.team.find(t => t.id === id);
   if (!m) return;
-  const allRoles = ['Media Analyst','Team Leader','Client Success Manager','Analyst Manager'].concat(MANCOMM_ROLES);
+  const allRoles = ['Media Analyst','Senior Media Analyst','Team Leader','Client Success Manager','Analyst Manager'].concat(MANCOMM_ROLES);
   const roleOpts = allRoles.map(r => '<option' + (r===m.role?' selected':'') + '>' + r + '</option>').join('');
   const teamOpts = TEAMS.map(t => '<option value="' + t.id + '"' + (t.id===m.teamId?' selected':'') + '>' + t.icon + ' ' + t.name + '</option>').join('');
   openModal('Edit Member', m.name,
@@ -4917,3 +4870,4 @@ async function doCreateChannel() {
 </script>
 </body>
 </html>
+
