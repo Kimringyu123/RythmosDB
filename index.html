@@ -157,7 +157,7 @@ body:has(#app.visible){overflow:hidden}
 .phase-pct{font-size:11px;color:var(--text2);width:36px;text-align:right;font-family:var(--mono)}
 /* Mobile responsiveness */
 @media(max-width:768px){
-  .sidebar{width:200px;min-width:200px}
+  .sidebar{width:220px;min-width:220px}
   .metric-grid{grid-template-columns:1fr 1fr!important}
   .accounts-grid{grid-template-columns:1fr!important}
   .team-grid{grid-template-columns:1fr 1fr!important}
@@ -165,10 +165,31 @@ body:has(#app.visible){overflow:hidden}
   .content{padding:14px}
   .topbar{padding:10px 14px}
 }
-@media(max-width:540px){
-  .sidebar{display:none}
-  .metric-grid{grid-template-columns:1fr!important}
+@media(max-width:600px){
+  .sidebar{display:none!important}
+  .metric-grid{grid-template-columns:1fr 1fr!important}
+  .accounts-grid{grid-template-columns:1fr!important}
+  .team-grid{grid-template-columns:1fr 1fr!important}
+  .two-col{grid-template-columns:1fr!important}
+  .content{padding:12px;padding-bottom:72px}
+  .topbar{padding:8px 12px}
+  .topbar-title{font-size:14px}
+  body:has(#app.visible) .mobile-bottom-nav{display:flex!important}
+  .channels-layout{margin:-12px!important}
+  .ch-sidebar{width:200px;min-width:200px}
+  .modal{padding:20px;width:96vw!important;max-width:96vw!important}
 }
+@media(max-width:420px){
+  .metric-grid{grid-template-columns:1fr!important}
+  .ch-sidebar{display:none!important}
+  #ch-mobile-back{display:flex!important}
+  .ch-main{display:flex!important}
+}
+/* Mobile bottom nav */
+.mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:58px;background:var(--bg2);border-top:1px solid var(--border);z-index:200;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom,0)}
+.mob-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 8px;border-radius:var(--r);cursor:pointer;transition:all 0.1s;flex:1;font-size:10px;color:var(--text3);background:none;border:none;font-family:var(--font)}
+.mob-nav-btn.active{color:var(--accent2)}
+.mob-nav-icon{font-size:18px;line-height:1}
 
 /* ─── SOP CARDS ─── */
 .sop-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);margin-bottom:10px;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s}
@@ -372,67 +393,92 @@ body:has(#app.visible){overflow:hidden}
 .sop-empty-upload{text-align:center;padding:60px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl)}
 
 /* ─── CHANNELS ─── */
-.channels-layout{display:flex;height:100%;gap:0;overflow:hidden;margin:-24px;height:calc(100vh - 52px)}
-.ch-sidebar{width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.ch-sidebar-header{padding:14px 12px 10px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.ch-list{flex:1;overflow-y:auto;padding:6px}
-.ch-item{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--r);cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.1s;user-select:none}
-.ch-item:hover{background:var(--bg3);color:var(--text)}
-.ch-item.active{background:var(--accent-bg);color:var(--accent2);font-weight:600}
-.ch-item-hash{font-size:15px;color:var(--text3);flex-shrink:0;width:16px;text-align:center}
-.ch-item.active .ch-item-hash{color:var(--accent2)}
-.ch-unread{margin-left:auto;background:var(--accent);color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;font-family:var(--mono)}
-.ch-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-.ch-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--bg)}
-.ch-header-name{font-size:15px;font-weight:700;letter-spacing:-0.3px}
-.ch-header-desc{font-size:12px;color:var(--text2);margin-left:8px}
-.ch-messages{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:2px}
-.ch-msg{display:flex;gap:10px;padding:4px 8px;border-radius:var(--r);transition:background 0.1s;position:relative}
-.ch-msg:hover{background:var(--bg3)}
-.ch-msg:hover .ch-msg-actions{opacity:1}
-.ch-msg-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px}
+/* ═══════════════ CHANNELS — SLACK-STYLE ═══════════════ */
+.channels-layout{display:flex;height:calc(100vh - 52px);gap:0;overflow:hidden;margin:-24px}@media(max-width:600px){.channels-layout{height:calc(100vh - 52px - 58px)}}
+.ch-sidebar{width:240px;min-width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.ch-workspace-header{padding:0 14px;height:50px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--border);flex-shrink:0}
+.ch-workspace-name{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-0.3px}
+.ch-sidebar-body{flex:1;overflow-y:auto;padding:8px 0 20px}
+.ch-section-label{padding:10px 14px 3px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.ch-section-add{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;padding:0 2px;border-radius:4px;transition:all 0.1s;flex-shrink:0}
+.ch-section-add:hover{color:var(--accent2)}
+.ch-item{display:flex;align-items:center;gap:7px;padding:5px 14px;cursor:pointer;font-size:13px;color:var(--text2);transition:background 0.08s;user-select:none;border-radius:0}
+.ch-item:hover{background:rgba(124,110,245,0.08);color:var(--text)}
+.ch-item.active{background:var(--accent) !important;color:#fff !important}
+.ch-item.active .ch-item-hash,.ch-item.active .ch-dm-avatar-wrap{color:rgba(255,255,255,0.7)}
+.ch-item-hash{font-size:15px;color:var(--text3);flex-shrink:0;width:18px;text-align:center}
+.ch-item-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.ch-item.active .ch-item-name{font-weight:700}
+.ch-unread-badge{background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:20px;padding:1px 6px;min-width:16px;text-align:center;flex-shrink:0}
+.ch-dm-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;border:2px solid var(--bg2)}
+
+/* Main */
+.ch-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;background:var(--bg)}
+.ch-header{padding:0 20px;height:50px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ch-header-icon{font-size:18px;color:var(--text2);font-weight:700}
+.ch-header-name{font-size:15px;font-weight:800;letter-spacing:-0.3px}
+.ch-header-sep{color:var(--border2);margin:0 6px}
+.ch-header-desc{font-size:12px;color:var(--text2);border-left:1px solid var(--border2);padding-left:12px}
+.ch-header-actions{margin-left:auto;display:flex;gap:6px}
+.ch-header-action-btn{background:none;border:1px solid var(--border2);border-radius:var(--r);padding:4px 10px;font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all 0.1s}
+.ch-header-action-btn:hover{border-color:var(--accent);color:var(--accent2)}
+
+/* Messages */
+.ch-messages{flex:1;overflow-y:auto;padding:12px 0 4px;display:flex;flex-direction:column}
+.ch-date-divider{display:flex;align-items:center;gap:10px;padding:12px 20px 6px;color:var(--text3);font-size:11px;font-weight:700;letter-spacing:0.3px}
+.ch-date-divider::before,.ch-date-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.ch-msg{display:flex;gap:10px;padding:3px 20px;transition:background 0.08s;position:relative;align-items:flex-start}
+.ch-msg:hover{background:var(--bg2)}
+.ch-msg:hover .ch-msg-actions{opacity:1;pointer-events:all}
+.ch-msg-avatar{width:36px;height:36px;border-radius:8px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;cursor:pointer;color:#fff}
 .ch-msg-body{flex:1;min-width:0}
-.ch-msg-meta{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
-.ch-msg-name{font-size:13px;font-weight:700}
-.ch-msg-time{font-size:10px;color:var(--text3);font-family:var(--mono)}
-.ch-msg-text{font-size:13px;color:var(--text);line-height:1.6;word-break:break-word;white-space:pre-wrap}
-.ch-msg-text a{color:var(--accent2);text-decoration:underline}
-.ch-msg-img{max-width:360px;max-height:240px;border-radius:var(--r);margin-top:6px;cursor:pointer;border:1px solid var(--border)}
-.ch-msg-file{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:8px 12px;margin-top:6px;font-size:12px;cursor:pointer;text-decoration:none;color:var(--text)}
-.ch-msg-file:hover{border-color:var(--accent-border)}
-.ch-msg-reactions{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.ch-reaction{display:inline-flex;align-items:center;gap:3px;background:var(--bg4);border:1px solid var(--border2);border-radius:20px;padding:2px 8px;font-size:12px;cursor:pointer;transition:all 0.1s;user-select:none}
-.ch-reaction:hover,.ch-reaction.mine{background:var(--accent-bg);border-color:var(--accent-border)}
-.ch-reaction-count{font-size:11px;color:var(--text2);font-family:var(--mono)}
-.ch-msg-actions{position:absolute;top:-4px;right:8px;opacity:0;display:flex;gap:2px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:2px;box-shadow:var(--shadow)}
-.ch-msg-action-btn{background:none;border:none;cursor:pointer;font-size:14px;padding:3px 5px;border-radius:5px;transition:background 0.1s;color:var(--text2)}
-.ch-msg-action-btn:hover{background:var(--bg4)}
-.ch-thread{border-left:2px solid var(--border2);margin-left:44px;padding-left:12px;margin-top:2px}
-.ch-composer{padding:12px 18px;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg)}
-.ch-composer-box{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rl);display:flex;flex-direction:column;overflow:hidden;transition:border-color 0.2s}
-.ch-composer-box:focus-within{border-color:var(--accent)}
-.ch-composer-input{width:100%;background:none;border:none;outline:none;padding:10px 14px;font-size:13px;color:var(--text);font-family:var(--font);resize:none;min-height:40px;max-height:120px;line-height:1.6}
-.ch-composer-toolbar{display:flex;align-items:center;gap:4px;padding:6px 10px;border-top:1px solid var(--border)}
-.ch-toolbar-btn{background:none;border:none;cursor:pointer;font-size:16px;padding:4px 6px;border-radius:6px;color:var(--text2);transition:all 0.1s;line-height:1}
+.ch-msg-meta{display:flex;align-items:baseline;gap:7px;margin-bottom:2px}
+.ch-msg-name{font-size:13px;font-weight:800;color:var(--text);cursor:pointer}
+.ch-msg-name:hover{text-decoration:underline}
+.ch-msg-role-tag{font-size:10px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-weight:600}
+.ch-msg-time{font-size:11px;color:var(--text3)}
+.ch-msg-text{font-size:13.5px;color:var(--text);line-height:1.65;word-break:break-word;white-space:pre-wrap}
+.ch-msg-text a{color:var(--accent2);text-decoration:none;border-bottom:1px solid rgba(124,110,245,0.3)}
+.ch-msg-text a:hover{border-bottom-color:var(--accent2)}
+.ch-msg-gif,.ch-msg-img{max-width:400px;max-height:300px;border-radius:var(--rl);cursor:pointer;margin-top:6px;display:block;border:1px solid var(--border)}
+.ch-msg-file{display:inline-flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;font-size:12px;color:var(--text);text-decoration:none;margin-top:6px;transition:border-color 0.1s}
+.ch-msg-file:hover{border-color:var(--accent)}
+.ch-msg-reactions{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.ch-reaction{display:inline-flex;align-items:center;gap:3px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:3px 8px;font-size:12px;cursor:pointer;transition:all 0.1s;color:var(--text2);font-family:var(--font)}
+.ch-reaction:hover{border-color:var(--accent);background:var(--accent-bg)}
+.ch-reaction.mine{background:var(--accent-bg);border-color:var(--accent);color:var(--accent2)}
+.ch-reaction-count{font-size:11px;font-weight:700}
+.ch-msg-actions{position:absolute;top:-4px;right:20px;display:flex;gap:1px;opacity:0;pointer-events:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:2px;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:10}
+.ch-msg-action-btn{background:none;border:none;cursor:pointer;font-size:14px;padding:4px 6px;border-radius:4px;color:var(--text3);transition:all 0.1s;line-height:1}
+.ch-msg-action-btn:hover{background:var(--bg3);color:var(--text)}
+.ch-reply-context{margin-bottom:4px;padding:4px 10px;background:var(--bg3);border-left:3px solid var(--accent);border-radius:0 4px 4px 0;font-size:12px;color:var(--text2)}
+
+/* Typing */
+.ch-typing{padding:2px 20px;min-height:18px;font-size:11px;color:var(--text3);flex-shrink:0;font-style:italic}
+
+/* Composer */
+.ch-composer{padding:0 16px 14px;flex-shrink:0}
+.ch-composer-wrap{border:1px solid var(--border2);border-radius:var(--rl);overflow:hidden;background:var(--bg2);transition:border-color 0.15s,box-shadow 0.15s}
+.ch-composer-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px rgba(124,110,245,0.1)}
+.ch-reply-bar{font-size:11px;color:var(--text3);padding:7px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.ch-composer-input{width:100%;background:none;border:none;outline:none;padding:12px 14px 6px;font-size:13.5px;color:var(--text);font-family:var(--font);resize:none;min-height:46px;max-height:160px;line-height:1.6;box-sizing:border-box;display:block}
+.ch-composer-toolbar{display:flex;align-items:center;gap:2px;padding:6px 10px;border-top:1px solid var(--border)}
+.ch-toolbar-btn{background:none;border:none;cursor:pointer;font-size:16px;padding:5px 6px;border-radius:6px;color:var(--text3);transition:all 0.1s;line-height:1}
 .ch-toolbar-btn:hover{background:var(--bg4);color:var(--text)}
-.ch-send-btn{margin-left:auto;background:var(--accent);color:#fff;border:none;cursor:pointer;border-radius:var(--r);padding:5px 14px;font-size:12px;font-weight:600;font-family:var(--font);transition:all 0.15s}
+.ch-send-btn{margin-left:auto;background:var(--accent);color:#fff;border:none;cursor:pointer;border-radius:var(--r);padding:6px 16px;font-size:12px;font-weight:700;font-family:var(--font);transition:all 0.15s;display:flex;align-items:center;gap:5px;letter-spacing:0.2px}
 .ch-send-btn:hover{background:#6a5ee0}
-.ch-send-btn:disabled{opacity:0.4;cursor:not-allowed}
-.emoji-picker{position:absolute;bottom:100%;left:0;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:10px;box-shadow:var(--shadow-lg);display:flex;flex-wrap:wrap;gap:4px;width:280px;z-index:100;max-height:200px;overflow-y:auto}
-.emoji-btn{font-size:20px;cursor:pointer;padding:4px;border-radius:6px;transition:background 0.1s;border:none;background:none;line-height:1}
+.ch-send-btn:disabled{opacity:0.35;cursor:not-allowed}
+
+/* Emoji/GIF */
+.emoji-picker{position:absolute;bottom:calc(100% + 6px);left:0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:10px;display:grid;grid-template-columns:repeat(8,1fr);gap:2px;z-index:300;width:268px;box-shadow:0 8px 32px rgba(0,0,0,0.25)}
+.emoji-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px;border-radius:5px;transition:background 0.1s;line-height:1}
 .emoji-btn:hover{background:var(--bg4)}
-.gif-picker{position:absolute;bottom:100%;left:40px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:10px;box-shadow:var(--shadow-lg);width:320px;z-index:100}
-.gif-search{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:7px 12px;font-size:12px;color:var(--text);font-family:var(--font);outline:none;margin-bottom:8px}
-.gif-search:focus{border-color:var(--accent)}
-.gif-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:220px;overflow-y:auto}
+.gif-picker{position:absolute;bottom:calc(100% + 6px);left:0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);z-index:300;width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.25);overflow:hidden}
+.gif-search{width:100%;background:var(--bg3);border:none;border-bottom:1px solid var(--border);outline:none;padding:10px 14px;font-size:13px;color:var(--text);font-family:var(--font);box-sizing:border-box}
+.gif-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:8px;max-height:220px;overflow-y:auto}
 .gif-item{border-radius:var(--r);overflow:hidden;cursor:pointer;aspect-ratio:16/9;background:var(--bg4)}
-.gif-item img{width:100%;height:100%;object-fit:cover;transition:opacity 0.2s}
-.gif-item:hover img{opacity:0.8}
-.ch-date-divider{text-align:center;position:relative;margin:12px 0}
-.ch-date-divider::before{content:'';position:absolute;left:0;right:0;top:50%;border-top:1px solid var(--border)}
-.ch-date-divider span{background:var(--bg);padding:0 10px;font-size:10px;color:var(--text3);position:relative;font-family:var(--mono)}
-.ch-typing{font-size:11px;color:var(--text3);padding:4px 18px;height:20px;font-style:italic}
-.ch-msg-gif{max-width:280px;border-radius:var(--r);margin-top:6px;cursor:pointer}
+.gif-item img,.gif-thumb{width:100%;height:100%;object-fit:cover;transition:opacity 0.15s}
+.gif-item:hover img,.gif-thumb:hover{opacity:0.8}
 .ch-new-channel-btn{font-size:16px;cursor:pointer;color:var(--text3);transition:color 0.15s;background:none;border:none;padding:2px 4px}
 .ch-new-channel-btn:hover{color:var(--text)}
 </style>
@@ -594,6 +640,25 @@ body:has(#app.visible){overflow:hidden}
 
 <div id="notif-container"></div>
 
+<!-- MOBILE BOTTOM NAV -->
+<div class="mobile-bottom-nav" id="mobile-bottom-nav">
+  <button class="mob-nav-btn" id="mob-btn-dashboard" onclick="showPage('dashboard');updateMobNav('dashboard')">
+    <span class="mob-nav-icon">◈</span>Home
+  </button>
+  <button class="mob-nav-btn" id="mob-btn-accounts" onclick="showPage('accounts');updateMobNav('accounts')">
+    <span class="mob-nav-icon">⬡</span>Accounts
+  </button>
+  <button class="mob-nav-btn" id="mob-btn-channels" onclick="showPage('channels');updateMobNav('channels')">
+    <span class="mob-nav-icon">💬</span>Chat
+  </button>
+  <button class="mob-nav-btn" id="mob-btn-timelog" onclick="showPage('timelog');updateMobNav('timelog')">
+    <span class="mob-nav-icon">⏱</span>Time
+  </button>
+  <button class="mob-nav-btn" id="mob-btn-settings" onclick="showPage('settings');updateMobNav('settings')">
+    <span class="mob-nav-icon">⚙</span>More
+  </button>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════
 // TEAMS & ROLES
@@ -615,56 +680,56 @@ const ROLES = {
     canManageAccounts: true, canManageSOP: true, canManageTeam: true,
     canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: true,
     canViewAllTeams: true, canManageAllTeams: true,
-    color: '#f04b4b', tag: 'role-coo', label: 'COO'
+    color: '#f04b4b', canDeleteAccount: false, tag: 'role-coo', label: 'COO'
   },
   'Operations Manager': {
     canManageAccounts: true, canManageSOP: true, canManageTeam: true,
     canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: true,
     canViewAllTeams: true, canManageAllTeams: false,
-    color: '#a855f7', tag: 'role-ops', label: 'Ops Manager'
+    color: '#a855f7', canDeleteAccount: false, tag: 'role-ops', label: 'Ops Manager'
   },
   'HR Manager': {
     canManageAccounts: false, canManageSOP: false, canManageTeam: true,
     canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: false,
     canViewAllTeams: true, canManageAllTeams: false,
-    color: '#ec4899', tag: 'role-hr', label: 'HR'
+    color: '#ec4899', canDeleteAccount: false, tag: 'role-hr', label: 'HR'
   },
   'Learning and Development': {
     canManageAccounts: false, canManageSOP: true, canManageTeam: false,
     canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: true,
     canViewAllTeams: true, canManageAllTeams: false,
-    color: '#22d3ee', tag: 'role-ld', label: 'L&D'
+    color: '#22d3ee', tag: 'role-ld', label: 'L&D', canDeleteAccount: true
   },
   // ── Team-level roles (scoped to own team) ────────
   'Analyst Manager': {
     canManageAccounts: true, canManageSOP: true, canManageTeam: true,
     canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: true,
     canViewAllTeams: false, canManageAllTeams: false,
-    color: '#7c6ef5', tag: 'role-admin', label: 'Analyst Manager'
+    color: '#7c6ef5', canDeleteAccount: false, tag: 'role-admin', label: 'Analyst Manager'
   },
   'Client Success Manager': {
     canManageAccounts: true, canManageSOP: true, canManageTeam: true,
     canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: true,
     canViewAllTeams: false, canManageAllTeams: false,
-    color: '#38b4f5', tag: 'role-csm', label: 'CSM'
+    color: '#38b4f5', canDeleteAccount: false, tag: 'role-csm', label: 'CSM'
   },
   'Team Leader': {
     canManageAccounts: false, canManageSOP: true, canManageTeam: false,
     canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: true,
     canViewAllTeams: false, canManageAllTeams: false,
-    color: '#f5a623', tag: 'role-tl', label: 'Team Leader'
+    color: '#f5a623', canDeleteAccount: false, tag: 'role-tl', label: 'Team Leader'
   },
   'Media Analyst': {
     canManageAccounts: false, canManageSOP: false, canManageTeam: false,
     canViewPerformance: false, canDownloadReports: true, canSetSOPPerAccount: false,
     canViewAllTeams: false, canManageAllTeams: false,
-    color: '#2fd87e', tag: 'role-analyst', label: 'Analyst'
+    color: '#2fd87e', canDeleteAccount: false, tag: 'role-analyst', label: 'Analyst'
   },
   'Senior Media Analyst': {
-    canManageAccounts: false, canManageSOP: false, canManageTeam: false,
-    canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: false,
+    canManageAccounts: true, canManageSOP: true, canManageTeam: false,
+    canViewPerformance: true, canDownloadReports: true, canSetSOPPerAccount: true,
     canViewAllTeams: false, canManageAllTeams: false,
-    color: '#22d3ee', tag: 'role-ld', label: 'Sr. Analyst'
+    color: '#22d3ee', tag: 'role-ld', label: 'Sr. Analyst', canDeleteAccount: false
   }
 };
 
@@ -677,12 +742,30 @@ function perms(key) {
   return ROLES[r]?.[key] || false;
 }
 
-// Returns accounts visible to current user (own team only, or all if ManComm)
+// Returns accounts visible to current user based on role
+// ManComm → all accounts
+// Analyst Manager → all accounts in their team (or all if no teamId)
+// CSM, Senior Media Analyst, Team Leader → all accounts in their team
+// Media Analyst → only accounts they are assigned to (plus their team accounts they can browse)
 function getVisibleAccounts() {
-  // ManComm and Analyst Managers see all accounts without needing to join
-  if (isManComm() || STATE.currentUser?.role === 'Analyst Manager' || STATE.currentUser?.role === 'Client Success Manager') return STATE.accounts;
+  if (isManComm()) return STATE.accounts;
   const myTeamId = STATE.currentUser?.teamId;
-  if (!myTeamId) return STATE.accounts;
+  const role = STATE.currentUser?.role;
+  const uid = STATE.currentUser?.id;
+  // Analyst Manager sees all accounts (cross-team management)
+  if (role === 'Analyst Manager') return STATE.accounts;
+  // Team-scoped roles: see all accounts in their team
+  if (['Client Success Manager','Team Leader'].includes(role)) {
+    if (!myTeamId) return STATE.accounts;
+    return STATE.accounts.filter(a => a.teamId === myTeamId);
+  }
+  // Senior Media Analyst: strictly their team accounts only
+  if (role === 'Senior Media Analyst') {
+    if (!myTeamId) return [];
+    return STATE.accounts.filter(a => a.teamId === myTeamId);
+  }
+  // Media Analyst: strictly their team accounts only
+  if (!myTeamId) return STATE.accounts.filter(a => (a.analysts||[]).includes(uid));
   return STATE.accounts.filter(a => a.teamId === myTeamId);
 }
 
@@ -715,6 +798,60 @@ function getVisibleTeam() {
   return all.filter(m => m.teamId === myTeamId || m.id === STATE.currentUser?.id);
 }
 
+// Returns all operational staff for AM/CSM (cross-team assign), else visible team only
+function getAssignableAnalysts() {
+  const role = STATE.currentUser?.role;
+  const crossTeamRoles = ['Analyst Manager','Client Success Manager','COO','Operations Manager'];
+  const all = STATE.team.filter(m => !MANCOMM_ROLES.includes(m.role) && !m.archived);
+  if (crossTeamRoles.includes(role) || isManComm()) return all;
+  return getVisibleTeam().filter(m => !MANCOMM_ROLES.includes(m.role));
+}
+
+// Compute bandwidth score: higher Not Staffed/Unassigned hours = more available
+function getAnalystBandwidth() {
+  const timelogs = DB.get('timelogs', []);
+  const scores = {};
+  timelogs.forEach(log => {
+    if (log.stepId === 'tl_ns') { // Not Staffed / Unassigned
+      const hrs = (log.minutes || log.duration || 0) / 60;
+      scores[log.userId] = (scores[log.userId] || 0) + hrs;
+    }
+  });
+  return scores; // userId -> total unassigned hours
+}
+
+// Render analyst checkbox picker with optional prefix for id, existing selections, and bandwidth hints
+function renderAnalystPicker(prefix, selectedIds) {
+  const pfx = prefix || 'ap';
+  const analysts = getAssignableAnalysts();
+  const bandwidth = getAnalystBandwidth();
+  if (!analysts.length) return '<div style="color:var(--text3);font-size:12px;padding:8px">No analysts available.</div>';
+  // Sort: selected first, then by bandwidth desc
+  const sorted = [...analysts].sort((a, b) => {
+    const aSelected = (selectedIds||[]).includes(a.id) ? 1 : 0;
+    const bSelected = (selectedIds||[]).includes(b.id) ? 1 : 0;
+    if (bSelected !== aSelected) return bSelected - aSelected;
+    return (bandwidth[b.id]||0) - (bandwidth[a.id]||0);
+  });
+  const topBandwidth = sorted.filter(m => !(selectedIds||[]).includes(m.id) && (bandwidth[m.id]||0) > 0).slice(0, 3).map(m => m.id);
+  return '<div class="checkbox-multi" style="max-height:240px;overflow-y:auto">' + sorted.map(m => {
+    const bw = bandwidth[m.id] || 0;
+    const isRecommended = topBandwidth.includes(m.id);
+    const bwTag = isRecommended
+      ? `<span style="background:rgba(47,216,126,0.15);color:var(--green);border:1px solid var(--green-border);border-radius:8px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:4px" title="High availability: ${bw.toFixed(1)}h unassigned logged">✦ Recommended · ${bw.toFixed(0)}h free</span>`
+      : (bw > 0 ? `<span style="color:var(--text3);font-size:10px;margin-left:4px">${bw.toFixed(0)}h free</span>` : '');
+    const teamObj = TEAMS.find(t => t.id === m.teamId);
+    const teamTag = teamObj ? `<span style="color:${teamObj.color};font-size:9px;margin-left:4px">${teamObj.icon}</span>` : '';
+    return `<label class="checkbox-item">
+      <input type="checkbox" value="${m.id}" id="${pfx}-${m.id}" ${(selectedIds||[]).includes(m.id)?'checked':''}>
+      <div class="avatar" style="background:${m.color||'var(--accent)'};width:22px;height:22px;font-size:10px">${m.name.charAt(0)}</div>
+      <span>${m.name}${teamTag}</span>
+      <span class="text-dim text-xs" style="margin-left:4px">${m.role}</span>
+      ${bwTag}
+    </label>`;
+  }).join('') + '</div>';
+}
+
 // ═══════════════════════════════════════════════
 // DEFAULT SOP DATA
 // ═══════════════════════════════════════════════
@@ -723,6 +860,56 @@ const DEFAULT_SOP = [
   // This list is intentionally empty in the default installation.
   // Team Leaders should upload the SOP template to populate steps per account.
 ];
+
+// ═══════════════════════════════════════════════
+// TIME TRACKER TASK LIST (fixed, separate from SOP)
+// ═══════════════════════════════════════════════
+const TL_TASKS = [
+  // ── Billable: Data Manipulation ──
+  { id: 'tl_dc',  label: 'Data Collection',                       category: 'Data Manipulation',              billable: true,  desc: 'Gathering data from all sources — downloading, exporting, eyeballing, trawling, adding data not captured by platform.' },
+  { id: 'tl_dcl', label: 'Data Cleaning',                         category: 'Data Manipulation',              billable: true,  desc: 'Data cleaning, tagging, coding and preparation to make data usable.' },
+  { id: 'tl_np',  label: 'Newspicking',                           category: 'Data Manipulation',              billable: true,  desc: 'Selecting relevant hits for the client — news articles for report/NL.' },
+  // ── Billable: Data Viz & Interpretation ──
+  { id: 'tl_dcc', label: 'Deliverable Compilation',               category: 'Data Viz & Interpretation',      billable: true,  desc: 'Assembling, formatting and packaging data, visuals and key findings into slide deck or PDF. Addition of links, clippings, snips.' },
+  { id: 'tl_rva', label: 'Research, Visualization & Analysis',    category: 'Data Viz & Interpretation',      billable: true,  desc: 'Chart building, process or data analysis to identify exposure trends, sentiment trends, key stories, etc.' },
+  { id: 'tl_ssw', label: 'Summary/Sentiment Writing & Translations', category: 'Data Viz & Interpretation',   billable: true,  desc: 'Writeups — summary writing, sentiment analysis and translation.' },
+  { id: 'tl_qa',  label: 'QA Review & Implementation',            category: 'Data Viz & Interpretation',      billable: true,  desc: 'Review and proofreading of report. Updates based on QA/QC — spell check, text, font. Feedback and implementation of feedback (internal or client).' },
+  // ── Billable: Out-of-Scope / Ad Hoc ──
+  { id: 'tl_psp', label: 'Project Set Up & Planning',             category: 'Out-of-Scope / Ad Hoc',          billable: true,  desc: 'Scope alignment, template set up, guide creation/handover doc, account handovers & transfers.' },
+  { id: 'tl_rs',  label: 'Rescoping',                             category: 'Out-of-Scope / Ad Hoc',          billable: true,  desc: 'Adjustments made to original scope and downstream impact of scope changes.' },
+  // ── Non-Billable ──
+  { id: 'tl_pd',  label: 'Professional Development',              category: 'Non-Billable',                   billable: false, desc: 'Training, learning, skill development.' },
+  { id: 'tl_si',  label: 'Strategic Initiatives & Process Improvements', category: 'Non-Billable',            billable: false, desc: 'Internal improvement projects, strategy work.' },
+  { id: 'tl_bd',  label: 'Business Development Activities',       category: 'Non-Billable',                   billable: false, desc: 'Pitches, proposals, BD support.' },
+  { id: 'tl_ad',  label: 'Administrative',                        category: 'Non-Billable',                   billable: false, desc: 'Admin tasks, filing, general housekeeping.' },
+  { id: 'tl_im',  label: 'Internal Meetings',                     category: 'Non-Billable',                   billable: false, desc: 'Team meetings, standups, internal syncs.' },
+  { id: 'tl_rhr', label: 'Recruitment & HR',                      category: 'Non-Billable',                   billable: false, desc: 'Interviews, onboarding, HR-related activities.' },
+  { id: 'tl_rm',  label: 'Resource Management',                   category: 'Non-Billable',                   billable: false, desc: 'Capacity planning, resource allocation.' },
+  { id: 'tl_ns',  label: 'Not Staffed / Unassigned',             category: 'Non-Billable',                   billable: false, desc: 'Idle time, bench time, unassigned periods.' },
+];
+
+const TL_BILLABLE_CATS  = ['Data Manipulation','Data Viz & Interpretation','Out-of-Scope / Ad Hoc'];
+const TL_NONBILLABLE_CAT = 'Non-Billable';
+
+// Render <option> groups for time tracker task picker
+function renderTLTaskOptions(selectedId) {
+  const cats = [...new Set(TL_TASKS.map(t => t.category))];
+  return cats.map(cat => {
+    const tasks = TL_TASKS.filter(t => t.category === cat);
+    const isBill = tasks[0]?.billable;
+    return `<optgroup label="${isBill ? '✦ ' : '◇ '}${cat}">`
+      + tasks.map(t => `<option value="${t.id}" ${t.id===selectedId?'selected':''}>${t.label}</option>`).join('')
+      + '</optgroup>';
+  }).join('');
+}
+
+// Check if a timelog entry is billable using TL_TASKS
+function tlIsBillable(log) {
+  const task = TL_TASKS.find(t => t.id === log.stepId);
+  if (task) return task.billable;
+  // legacy fallback — non-billable account ID
+  return log.accountId !== NB_ACCOUNT_ID;
+}
 
 const PHASE_COLORS={1:'var(--phase1)',2:'var(--phase2)',3:'var(--phase3)',4:'var(--phase4)'};
 const PHASE_NAMES={1:'Data Manipulation',2:'Data Viz & Interpretation',3:'Out-of-Scope / Ad Hoc',4:'Non-Billable'};
@@ -886,19 +1073,14 @@ function showDBLoader() {
   el.innerHTML = `
     <img src="data:image/png;base64,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" alt="Rythmos" class="logo-img" style="height:48px;width:48px;object-fit:contain;border-radius:10px">
     <div style="font-size:14px;font-weight:600;color:var(--text)">Rythmos DB</div>
-    <div style="font-size:12px;color:var(--text2)">Loading database…</div>
-    <div style="width:180px;height:3px;background:var(--bg4);border-radius:20px;overflow:hidden;margin-top:4px">
-      <div id="db-loader-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:20px;transition:width 0.4s ease"></div>
-    </div>`;
+    <div style="font-size:12px;color:var(--text2)">Loading…</div>`;
   document.body.appendChild(el);
   return el;
 }
 
 function hideDBLoader(el) {
   if (!el) return;
-  const bar = el.querySelector('#db-loader-bar');
-  if (bar) bar.style.width = '100%';
-  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 200);
+  el.style.opacity = '0'; el.style.transition = 'opacity 0.2s'; setTimeout(() => el.remove(), 200);
 }
 
 // ═══════════════════════════════════════════════
@@ -914,7 +1096,9 @@ let STATE = {
   notifications: [],
   aiHistory: [],
   sopExpanded: {},
-  currentTeamFilter: null // used by ManComm to switch team view
+  currentTeamFilter: null, // used by ManComm to switch team view
+  selectedAccounts: new Set(), // for bulk operations
+  bulkSelectMode: false
 };
 
 function loadState() {
@@ -1178,14 +1362,29 @@ function showPage(page) {
     if (el) { el.style.padding = '24px'; el.style.overflow = ''; }
   }
   STATE.currentPage = page;
+  if (page !== 'accounts') { STATE.bulkSelectMode = false; STATE.selectedAccounts = new Set(); }
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const idx = PAGES.indexOf(page);
   if (idx >= 0) document.querySelectorAll('.nav-item')[idx]?.classList.add('active');
   const titles = { dashboard:'Dashboard', sop:'SOP Tracker', accounts:'Accounts', activity:'Activity Log', performance:'Performance', ai:'AI Assistant', reports:'Reports & PDF', team:'Team Hub', timelog:'Time Tracker', leaves:'Leave Calendar', channels:'Channels', settings:'Settings', 'account-view':'Account Overview' };
   document.getElementById('page-title').textContent = titles[page] || page;
-  document.getElementById('page-sub').textContent = '';
+  // Set subtitle for ManComm oversight context
+  const sub = isManComm() && ['dashboard','accounts','performance','team','timelog','leaves'].includes(page)
+    ? '🏢 ManComm — All Teams Oversight'
+    : '';
+  document.getElementById('page-sub').textContent = sub;
   const renders = { dashboard:renderDashboard, sop:renderSOP, accounts:renderAccounts, activity:renderActivity, performance:renderPerformance, ai:renderAI, reports:renderReports, team:renderTeam, timelog:renderTimeLog, leaves:renderLeaveCalendar, channels:renderChannels, settings:renderSettings, 'account-view':renderAccountView };
   if (renders[page]) renders[page]();
+  updateMobNav(page);
+}
+
+function updateMobNav(page) {
+  const mobMap = { dashboard:'dashboard', accounts:'accounts', channels:'channels', timelog:'timelog', settings:'settings', sop:'dashboard', activity:'dashboard', performance:'dashboard', ai:'dashboard', reports:'dashboard', team:'settings', leaves:'settings', 'account-view':'accounts' };
+  const active = mobMap[page] || 'dashboard';
+  document.querySelectorAll('.mob-nav-btn').forEach(b => {
+    const id = b.id?.replace('mob-btn-','');
+    b.classList.toggle('active', id === active);
+  });
 }
 
 // ═══════════════════════════════════════════════
@@ -1256,7 +1455,7 @@ function renderDashboard() {
   const teamLabel = isManComm() ? '🏢 All Teams' : (myTeam ? myTeam.icon + ' ' + myTeam.name : 'Your Team');
 
   document.getElementById('page-content').innerHTML = `
-    ${isManComm() ? '<div style="background:rgba(240,75,75,0.07);border:1px solid rgba(240,75,75,0.2);border-radius:var(--r);padding:8px 14px;font-size:12px;color:var(--red);margin-bottom:16px">🏢 <strong>ManComm View</strong> — You are viewing all teams across the organisation.</div>' : ''}
+    ${isManComm() ? '<div style="background:rgba(240,75,75,0.07);border:1px solid rgba(240,75,75,0.2);border-radius:var(--r);padding:8px 14px;font-size:12px;color:var(--red);margin-bottom:16px">🏢 <strong>ManComm Oversight</strong> — You have full visibility across all teams and accounts.</div>' : ''}
     <div class="metric-grid">
       <div class="metric-card m-accent">
         <div class="metric-label">Overall Completion</div>
@@ -1270,9 +1469,9 @@ function renderDashboard() {
         <div class="metric-sub">${activeAccounts} active</div>
       </div>
       <div class="metric-card m-blue">
-        <div class="metric-label">Team Members</div>
-        <div class="metric-value metric-blue">${getVisibleTeam().length}</div>
-        <div class="metric-sub">${getVisibleTeam().filter(m => m.online).length} online now</div>
+        <div class="metric-label">${isManComm() ? 'Operational Staff' : 'Team Members'}</div>
+        <div class="metric-value metric-blue">${getVisibleTeam().filter(m => !MANCOMM_ROLES.includes(m.role)).length}</div>
+        <div class="metric-sub">${getVisibleTeam().filter(m => m.online && !MANCOMM_ROLES.includes(m.role)).length} online now</div>
       </div>
       <div class="metric-card m-amber">
         <div class="metric-label">My Accounts</div>
@@ -1342,8 +1541,11 @@ function renderAccounts() {
   document.getElementById('page-content').innerHTML = `
     <div class="section-header mb12">
       <div class="section-title">All Accounts (${totalFiltered})</div>
-      <div class="flex gap8">
-        ${canManage ? '<button class="btn btn-primary btn-sm" onclick="openNewAccountModal()">+ New Account</button>' : ''}
+      <div class="flex gap8 items-center">
+        ${perms('canDeleteAccount') || canManage ? '<button class="btn btn-ghost btn-sm" id="bulk-toggle-btn" onclick="toggleBulkSelect()">' + (STATE.bulkSelectMode ? '✕ Cancel' : '☑ Select') + '</button>' : ''}
+        ${STATE.bulkSelectMode ? '<button class="btn btn-ghost btn-sm" onclick="bulkArchiveAccounts()">📦 Archive Selected</button>' : ''}
+        ${STATE.bulkSelectMode && perms('canDeleteAccount') ? '<button class="btn btn-danger btn-sm" onclick="bulkDeleteAccounts()">✕ Delete Selected</button>' : ''}
+        ${canManage && !STATE.bulkSelectMode ? '<button class="btn btn-primary btn-sm" onclick="openNewAccountModal()">+ New Account</button>' : ''}
       </div>
     </div>
     <div class="flex gap6 mb12 flex-wrap">
@@ -1423,9 +1625,12 @@ function accountCardHTML(a) {
   const avatarHTML = a.profilePicture
     ? `<div class="ac-avatar" style="background:#000;overflow:hidden;padding:0"><img src="${a.profilePicture}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--r)"></div>`
     : `<div class="ac-avatar" style="background:${a.color}">${a.name.charAt(0)}</div>`;
-  return `<div class="account-card" style="position:relative;cursor:pointer" onclick="openAccountView('${a.id}')">
+  const isBulk = STATE.bulkSelectMode;
+  const isSelected = STATE.selectedAccounts.has(a.id);
+  return `<div class="account-card" style="position:relative;cursor:pointer;${isSelected?'border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-border)':''}" onclick="${isBulk ? `toggleBulkItem('${a.id}')` : `openAccountView('${a.id}')`}">
     <div class="account-card-glow" style="background:${a.color}"></div>
-    ${unreadCount > 0 ? `<div style="position:absolute;top:8px;right:8px;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;z-index:2">${unreadCount} new</div>` : ''}
+    ${isBulk ? `<div style="position:absolute;top:8px;left:8px;z-index:3;width:20px;height:20px;border-radius:5px;border:2px solid ${isSelected?'var(--accent)':'var(--border3)'};background:${isSelected?'var(--accent)':'var(--bg3)'};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;cursor:pointer" onclick="event.stopPropagation();toggleBulkItem('${a.id}')">${isSelected?'✓':''}</div>` : ''}
+    ${unreadCount > 0 && !isBulk ? `<div style="position:absolute;top:8px;right:8px;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;z-index:2">${unreadCount} new</div>` : ''}
     <div class="ac-header">
       ${avatarHTML}
       <div style="flex:1;min-width:0">
@@ -1445,15 +1650,16 @@ function accountCardHTML(a) {
       }).join('') || '<div class="text-xs text-dim">No analysts assigned</div>'}
     </div>
     <div class="mt8"><div class="progress-bar-wrap pb-md"><div class="progress-bar-fill prog-accent" style="width:${pct}%"></div></div></div>
-    <div class="flex gap6 mt12" onclick="event.stopPropagation()">
+    <div class="flex gap6 mt12" onclick="event.stopPropagation()" style="${isBulk?'display:none':''}">
       <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openAccountView('${a.id}')">👁 View</button>
       <button class="btn btn-ghost btn-sm" onclick="openAccountSOPView('${a.id}')">📋 SOP</button>
       <button class="btn btn-ghost btn-sm" style="position:relative" onclick="openAccountView('${a.id}','chat')">💬${unreadCount>0?`<span style='position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:8px;padding:1px 4px;border-radius:8px'>${unreadCount}</span>`:''}</button>
-      ${!isAssigned && !isManComm() && !perms('canManageAccounts')
+      ${/* ManComm never needs to join — they oversee all accounts automatically */
+        !isManComm() && !isAssigned && !perms('canManageAccounts')
         ? `<button class="btn btn-green btn-sm" onclick="joinAccountPool('${a.id}')">+ Join</button>`
-        : isAssigned && !isManComm() && !perms('canManageAccounts') ? `<button class="btn btn-danger btn-sm" onclick="leaveAccountPool('${a.id}')">Leave</button>` : ''}
+        : !isManComm() && isAssigned && !perms('canManageAccounts') ? `<button class="btn btn-danger btn-sm" onclick="leaveAccountPool('${a.id}')">Leave</button>` : ''}
       ${canManage ? `<button class="btn btn-ghost btn-sm" onclick="editAccount(${idx})">✎</button>` : ''}
-      ${canManage ? `<button class="btn btn-danger btn-sm" onclick="deleteAccount(${idx})">✕</button>` : ''}
+      ${perms('canDeleteAccount') ? `<button class="btn btn-danger btn-sm" onclick="deleteAccount(${idx})">✕</button>` : ''}
     </div>
   </div>`;
 }
@@ -1517,14 +1723,12 @@ function openNewAccountModal() {
     </div>
     ${isManComm() ? '<div class="input-group"><label>Assign to Team</label><select id="m-acc-team">' + TEAMS.map(t => '<option value="' + t.id + '">' + t.icon + ' ' + t.name + '</option>').join('') + '</select></div>' : ''}
     <div class="modal-section">Assign Analysts</div>
-    <div class="checkbox-multi" id="analyst-picker">
-      ${STATE.team.map(m => `
-        <label class="checkbox-item">
-          <input type="checkbox" value="${m.id}" id="ca-${m.id}">
-          <div class="avatar" style="background:${m.color||'var(--accent)'};width:22px;height:22px;font-size:10px">${m.name.charAt(0)}</div>
-          <span>${m.name}</span>
-          <span class="text-dim text-xs" style="margin-left:auto">${m.role}</span>
-        </label>`).join('')}
+    <div style="background:rgba(47,216,126,0.07);border:1px solid var(--green-border);border-radius:var(--r);padding:8px 12px;margin-bottom:10px;font-size:11px;color:var(--green);display:flex;align-items:flex-start;gap:6px">
+      <span>✦</span>
+      <span><strong>Recommended</strong> analysts (marked ✦) are based on their logged <em>Not Staffed / Unassigned</em> hours in the Time Tracker — higher free hours = more available bandwidth.</span>
+    </div>
+    <div id="analyst-picker-wrap">
+      ${renderAnalystPicker(null, [])}
     </div>
     <div class="modal-section">SOP Configuration</div>
     <div class="input-group">
@@ -1577,7 +1781,7 @@ function saveNewAccount() {
     const src = STATE.accounts.find(a => a.id === srcId);
     sopSteps = src?.sopSteps ? JSON.parse(JSON.stringify(src.sopSteps)) : JSON.parse(JSON.stringify(DEFAULT_SOP));
   }
-  const analysts = Array.from(document.querySelectorAll('#analyst-picker input:checked')).map(el => el.value);
+  const analysts = Array.from(document.querySelectorAll('#analyst-picker-wrap input[type=checkbox]:checked')).map(el => el.value);
   const acc = {
     id: 'acc_' + Date.now(), name,
     type: document.getElementById('m-acc-type').value,
@@ -1679,19 +1883,13 @@ function editAccount(i) {
       <div class="input-group"><label>Account Handler / Owner</label>
         <select id="ea-handler">
           <option value="">— None —</option>
-          ${STATE.team.map(m => `<option value="${m.id}" ${(a.handlerId||a.analysts?.[0])===m.id?'selected':''}>${m.name} (${m.role})</option>`).join('')}
+          ${STATE.team.filter(m => !MANCOMM_ROLES.includes(m.role) && !m.archived).map(m => `<option value="${m.id}" ${(a.handlerId||a.analysts?.[0])===m.id?'selected':''}>${m.name} (${m.role})</option>`).join('')}
         </select>
       </div>
     </div>
     <div class="modal-section">Assigned Analysts</div>
-    <div class="checkbox-multi">
-      ${STATE.team.map(m => `
-        <label class="checkbox-item">
-          <input type="checkbox" value="${m.id}" id="ea-${m.id}" ${(a.analysts||[]).includes(m.id)?'checked':''}>
-          <div class="avatar" style="background:${m.color||'var(--accent)'};width:22px;height:22px;font-size:10px">${m.name.charAt(0)}</div>
-          <span>${m.name}</span>
-          <span class="text-dim text-xs" style="margin-left:auto">${m.role}</span>
-        </label>`).join('')}
+    <div id="edit-analyst-picker-wrap">
+      ${renderAnalystPicker('ea', a.analysts||[])}
     </div>
     <div class="input-group mt12"><label>General Notes</label><textarea id="ea-notes">${a.notes||''}</textarea></div>`,
     [{ label:'Cancel', ghost:true, action:'closeModal()' }, { label:'Save Changes', action:'updateAccount('+i+')' }]);
@@ -1707,7 +1905,7 @@ function updateAccount(i) {
   a.sopNotes = document.getElementById('ea-sop-notes')?.value || '';
   a.teamId = document.getElementById('ea-team')?.value || a.teamId;
   a.handlerId = document.getElementById('ea-handler')?.value || '';
-  a.analysts = Array.from(document.querySelectorAll(`[id^="ea-"][type="checkbox"]:checked`)).map(el=>el.value);
+  a.analysts = Array.from(document.querySelectorAll('#edit-analyst-picker-wrap input[type=checkbox]:checked')).map(el=>el.value);
   if (a._pendingPic !== undefined) { a.profilePicture = a._pendingPic; delete a._pendingPic; }
   saveAccounts();
   logActivity('✏️', `updated account "${a.name}"`);
@@ -1717,7 +1915,7 @@ function updateAccount(i) {
 }
 
 function deleteAccount(i) {
-  if (!perms('canManageAccounts')) { showNotif('Insufficient permissions', 'error'); return; }
+  if (!perms('canDeleteAccount')) { showNotif('Only L&D can delete accounts', 'error'); return; }
   if (!confirm('Delete "' + STATE.accounts[i].name + '"?')) return;
   logActivity('🗑️', `deleted account "${STATE.accounts[i].name}"`);
   STATE.accounts.splice(i, 1);
@@ -1725,6 +1923,150 @@ function deleteAccount(i) {
   updateNavBadges();
   showNotif('Account deleted', 'info');
   renderAccounts();
+}
+
+// ── Bulk select helpers ──
+function toggleBulkSelect() {
+  STATE.bulkSelectMode = !STATE.bulkSelectMode;
+  STATE.selectedAccounts = new Set();
+  renderAccounts();
+}
+
+function toggleBulkItem(accountId) {
+  if (STATE.selectedAccounts.has(accountId)) {
+    STATE.selectedAccounts.delete(accountId);
+  } else {
+    STATE.selectedAccounts.add(accountId);
+  }
+  const filtered = getCurrentFilteredAccounts();
+  const container = document.getElementById('accounts-grid-container');
+  if (container) {
+    container.innerHTML = filtered.length === 0
+      ? '<div class="empty">No accounts match your filters.</div>'
+      : '<div class="accounts-grid">' + filtered.map(a => accountCardHTML(a)).join('') + '</div>';
+  }
+}
+
+function getCurrentFilteredAccounts() {
+  const q = (document.getElementById('acc-search')?.value || '').toLowerCase();
+  const type = document.getElementById('acc-filter-type')?.value || '';
+  const cadence = document.getElementById('acc-filter-cadence')?.value || '';
+  const status = document.getElementById('acc-filter-status')?.value || '';
+  let base = getTeamFilteredAccounts();
+  return base.filter(a => {
+    return (!q || a.name.toLowerCase().includes(q) || (a.type||'').toLowerCase().includes(q))
+      && (!type || a.type === type)
+      && (!cadence || a.Cadence === cadence)
+      && (!status || a.status === status);
+  });
+}
+
+function bulkArchiveAccounts() {
+  if (!STATE.selectedAccounts.size) { showNotif('No accounts selected', 'info'); return; }
+  if (!perms('canManageAccounts')) { showNotif('Insufficient permissions', 'error'); return; }
+  const count = STATE.selectedAccounts.size;
+  if (!confirm('Archive ' + count + ' account(s)? They will be set to Paused status.')) return;
+  STATE.accounts.forEach(a => {
+    if (STATE.selectedAccounts.has(a.id)) a.status = 'Paused';
+  });
+  saveAccounts();
+  STATE.selectedAccounts = new Set();
+  STATE.bulkSelectMode = false;
+  logActivity('\u{1F4E6}', 'bulk archived ' + count + ' account(s)');
+  showNotif(count + ' account(s) archived (set to Paused)', 'success');
+  renderAccounts();
+  updateNavBadges();
+}
+
+function bulkDeleteAccounts() {
+  if (!STATE.selectedAccounts.size) { showNotif('No accounts selected', 'info'); return; }
+  if (!perms('canDeleteAccount')) { showNotif('Only L\u0026D can delete accounts', 'error'); return; }
+  const count = STATE.selectedAccounts.size;
+  if (!confirm('Permanently delete ' + count + ' account(s)? This cannot be undone.')) return;
+  const ids = new Set(STATE.selectedAccounts);
+  STATE.accounts = STATE.accounts.filter(a => !ids.has(a.id));
+  saveAccounts();
+  STATE.selectedAccounts = new Set();
+  STATE.bulkSelectMode = false;
+  logActivity('\u{1F5D1}\uFE0F', 'bulk deleted ' + count + ' account(s)');
+  showNotif(count + ' account(s) deleted', 'info');
+  renderAccounts();
+  updateNavBadges();
+}
+
+// ── Bulk select helpers ──
+function toggleBulkSelect() {
+  STATE.bulkSelectMode = !STATE.bulkSelectMode;
+  STATE.selectedAccounts = new Set();
+  renderAccounts();
+}
+
+function toggleBulkItem(accountId) {
+  if (STATE.selectedAccounts.has(accountId)) {
+    STATE.selectedAccounts.delete(accountId);
+  } else {
+    STATE.selectedAccounts.add(accountId);
+  }
+  // Re-render just the grid to update checkboxes without losing filters
+  const filtered = getCurrentFilteredAccounts();
+  const container = document.getElementById('accounts-grid-container');
+  if (container) {
+    container.innerHTML = filtered.length === 0
+      ? '<div class="empty">No accounts match your filters.</div>'
+      : '<div class="accounts-grid">' + filtered.map(a => accountCardHTML(a)).join('') + '</div>';
+  }
+  // Update bulk toolbar count
+  const btn = document.getElementById('bulk-toggle-btn');
+  if (!btn) return;
+  const sel = STATE.selectedAccounts.size;
+  document.querySelectorAll('.bulk-count').forEach(el => el.textContent = sel + ' selected');
+}
+
+function getCurrentFilteredAccounts() {
+  const q = (document.getElementById('acc-search')?.value || '').toLowerCase();
+  const type = document.getElementById('acc-filter-type')?.value || '';
+  const cadence = document.getElementById('acc-filter-cadence')?.value || '';
+  const status = document.getElementById('acc-filter-status')?.value || '';
+  let base = getTeamFilteredAccounts();
+  return base.filter(a => {
+    return (!q || a.name.toLowerCase().includes(q) || (a.type||'').toLowerCase().includes(q))
+      && (!type || a.type === type)
+      && (!cadence || a.Cadence === cadence)
+      && (!status || a.status === status);
+  });
+}
+
+function bulkArchiveAccounts() {
+  if (!STATE.selectedAccounts.size) { showNotif('No accounts selected', 'info'); return; }
+  if (!perms('canManageAccounts')) { showNotif('Insufficient permissions', 'error'); return; }
+  const count = STATE.selectedAccounts.size;
+  if (!confirm(`Archive ${count} account(s)?`)) return;
+  STATE.accounts.forEach(a => {
+    if (STATE.selectedAccounts.has(a.id)) a.status = 'Paused';
+  });
+  saveAccounts();
+  STATE.selectedAccounts = new Set();
+  STATE.bulkSelectMode = false;
+  logActivity('📦', `bulk archived ${count} account(s)`);
+  showNotif(`${count} account(s) archived`, 'success');
+  renderAccounts();
+  updateNavBadges();
+}
+
+function bulkDeleteAccounts() {
+  if (!STATE.selectedAccounts.size) { showNotif('No accounts selected', 'info'); return; }
+  if (!perms('canDeleteAccount')) { showNotif('Only L&D can delete accounts', 'error'); return; }
+  const count = STATE.selectedAccounts.size;
+  if (!confirm(`Permanently delete ${count} account(s)? This cannot be undone.`)) return;
+  const ids = new Set(STATE.selectedAccounts);
+  STATE.accounts = STATE.accounts.filter(a => !ids.has(a.id));
+  saveAccounts();
+  STATE.selectedAccounts = new Set();
+  STATE.bulkSelectMode = false;
+  logActivity('🗑️', `bulk deleted ${count} account(s)`);
+  showNotif(`${count} account(s) deleted`, 'info');
+  renderAccounts();
+  updateNavBadges();
 }
 
 // ═══════════════════════════════════════════════
@@ -1746,21 +2088,30 @@ function renderSOP() {
 
   let accountSelector = '';
   if (STATE.accounts.length > 0) {
-    accountSelector = `<div class="sop-account-selector">
+    const visAccounts = getVisibleAccounts();
+    const accName = acc ? acc.name.replace(/'/g,"\\'") : '';
+    accountSelector = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
       <span class="text-xs text-muted" style="flex-shrink:0">Account:</span>
-      <div class="sop-acc-chip ${!STATE.currentAccountId?'active':''}" onclick="clearAccountFilter()">🌐 All (Global)</div>
-      ${STATE.accounts.map(a => `
-        <div class="sop-acc-chip ${STATE.currentAccountId===a.id?'active':''}" onclick="openAccountSOPView('${a.id}')">
-          <div style="width:8px;height:8px;border-radius:50%;background:${a.color}"></div>
-          ${a.name}
-        </div>`).join('')}
+      <div style="position:relative;flex:1;min-width:200px;max-width:340px">
+        <input type="text" id="sop-acc-search" placeholder="Search accounts…" style="width:100%;padding:7px 12px;font-size:13px;border-radius:var(--r);background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--font)" oninput="filterSOPAccSearch(this.value)" onfocus="document.getElementById('sop-acc-dropdown').style.display='block'" onblur="setTimeout(()=>{const d=document.getElementById('sop-acc-dropdown');if(d)d.style.display='none';},180)" value="${accName}">
+        <div id="sop-acc-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);z-index:200;max-height:220px;overflow-y:auto;box-shadow:var(--shadow);margin-top:3px">
+          <div onclick="clearAccountFilter();document.getElementById('sop-acc-search').value='';document.getElementById('sop-acc-dropdown').style.display='none'" style="padding:8px 12px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background=''">
+            <span>🌐</span> All Accounts (Global)
+          </div>
+          ${visAccounts.map(a => `<div class="sop-acc-ddopt" data-name="${a.name.toLowerCase()}" onclick="openAccountSOPView('${a.id}');document.getElementById('sop-acc-search').value=unescape('${encodeURIComponent(a.name)}');document.getElementById('sop-acc-dropdown').style.display='none'" style="padding:8px 12px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background=''">
+            <div style="width:8px;height:8px;border-radius:50%;background:${a.color};flex-shrink:0"></div>
+            ${a.name}
+          </div>`).join('')}
+        </div>
+      </div>
+      ${acc ? `<button class="btn btn-ghost btn-sm" onclick="clearAccountFilter();document.getElementById('sop-acc-search').value=''">✕ Clear</button>` : ''}
     </div>`;
   }
 
   document.getElementById('page-content').innerHTML = `
     <div style="background:rgba(124,110,245,0.07);border:1px solid var(--accent-border);border-radius:var(--r);padding:10px 14px;font-size:12px;color:var(--accent2);margin-bottom:14px;display:flex;align-items:center;gap:8px">
       <span style="font-size:16px">📋</span>
-      <div><strong>SOP Tracker</strong> — This page contains the full, detailed <em>Standard Operating Procedures</em> for each workflow step. It tells you <em>how</em> to do the work, step by step. The <strong>Time Tracker</strong> uses only the short task names for logging time.</div>
+      <div><strong>SOP Tracker</strong> — This page contains the full, detailed <em>Standard Operating Procedures</em> for each workflow step. It tells you <em>how</em> to do the work, step by step. The <strong>Time Tracker</strong> is a separate standalone tool with its own fixed task list for logging billable and non-billable time.</div>
     </div>
     ${accountSelector}
     <div class="overall-progress mb16">
@@ -1808,6 +2159,16 @@ function clearAccountFilter() {
   renderSOP();
 }
 
+function filterSOPAccSearch(q) {
+  const dd = document.getElementById('sop-acc-dropdown');
+  if (!dd) return;
+  dd.style.display = 'block';
+  const lower = q.toLowerCase();
+  dd.querySelectorAll('.sop-acc-ddopt').forEach(el => {
+    el.style.display = !lower || el.dataset.name.includes(lower) ? '' : 'none';
+  });
+}
+
 function filterSOP(filter, el) {
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   if (el) el.classList.add('active');
@@ -1830,16 +2191,15 @@ function sopCardHTML(s, acc) {
   const phaseTag = isImported ? 'p1' : (PHASE_TAGS[s.phaseNum] || 'p1');
   const phaseLabel = isImported ? 'Imported' : s.phase;
 
-  return `<div class="sop-card ${done?'sop-done':''}" id="sop-card-${s.step}">
+  return `<div class="sop-card" id="sop-card-${s.step}">
     <div class="sop-header" onclick="toggleSOPCard('${s.step}')">
       <div class="phase-dot" style="background:${phaseColor}"></div>
       <div class="sop-step-num">${s.step}</div>
       <div class="sop-title" style="flex:1;min-width:0">
         <span class="phase-tag ${phaseTag}" style="${isImported?'background:rgba(34,211,238,0.12);color:var(--cyan)':''}">${phaseLabel}</span>
-        <span style="${done?'text-decoration:line-through;opacity:0.6':''}">${s.sub}</span>
+        <span>${s.sub}</span>
         <span style="font-size:9px;background:rgba(124,110,245,0.1);color:var(--accent2);border:1px solid rgba(124,110,245,0.2);border-radius:8px;padding:1px 6px;margin-left:4px;font-weight:600;letter-spacing:0.3px">SOP</span>
       </div>
-      <div class="sop-check ${done?'done':''}" onclick="event.stopPropagation();toggleSOPCheck('${s.step}')"></div>
       <div class="sop-expand ${open?'open':''}">▶</div>
     </div>
     <div class="sop-body ${open?'open':''}">
@@ -2029,7 +2389,7 @@ function assignStep(step, name) {
     <div class="input-group"><label>Assign to</label>
       <select id="assign-to">
         <option value="">— Select analyst —</option>
-        ${STATE.team.map(m => '<option value="' + m.id + '">' + m.name + ' (' + m.role + ')</option>').join('')}
+        ${STATE.team.filter(m => !MANCOMM_ROLES.includes(m.role) && !m.archived).map(m => '<option value="' + m.id + '">' + m.name + ' (' + m.role + ')</option>').join('')}
       </select>
     </div>`,
     [{ label:'Cancel', ghost:true, action:'closeModal()' }, { label:'Assign', action:'doAssign("'+step+'","'+name.replace(/"/g,'')+'")' }]);
@@ -2072,7 +2432,7 @@ function renderPerformance() {
     return;
   }
   var visAccounts = getVisibleAccounts();
-  var visTeam = getVisibleTeam();
+  var visTeam = getVisibleTeam().filter(function(m){ return !MANCOMM_ROLES.includes(m.role); }); // ManComm excluded from KPI tracking
   var accountRows = visAccounts.map(function(a) {
     var pct = calcAccountProgress(a);
     var analysts = (a.analysts||[]).map(function(uid){ var t=STATE.team.find(function(t){return t.id===uid;}); return t?t.name:'Unknown'; });
@@ -2134,7 +2494,7 @@ function renderPerformance() {
 
   var teamColHeader = isManComm() ? '<th>Team</th>' : '';
   var crossTeamSection = isManComm() ? '<div class="section-title mb12">🌐 Cross-Team Breakdown</div><div style="margin-bottom:24px">'+crossTeamHTML+'</div>' : '';
-  var mancommBanner = isManComm() ? '<div style="background:rgba(240,75,75,0.07);border:1px solid rgba(240,75,75,0.2);border-radius:var(--r);padding:8px 14px;font-size:12px;color:var(--red);margin-bottom:16px">🏢 <strong>ManComm View</strong> — You are viewing all teams.</div>' : '';
+  var mancommBanner = isManComm() ? '<div style="background:rgba(240,75,75,0.07);border:1px solid rgba(240,75,75,0.2);border-radius:var(--r);padding:8px 14px;font-size:12px;color:var(--red);margin-bottom:16px">🏢 <strong>ManComm Oversight</strong> — Viewing all teams\' operational performance. ManComm members are excluded from KPI tracking.</div>' : '';
 
   document.getElementById('page-content').innerHTML = mancommBanner
     + '<div class="metric-grid" style="grid-template-columns:repeat(4,1fr)">'
@@ -2674,7 +3034,7 @@ function renderSettings() {
         <div class="settings-section-title" style="color:var(--red)">Danger Zone</div>
         <div class="text-sm text-muted mb12">Reset your SOP progress or clear all app data. Cannot be undone.</div>
         <div class="flex gap8">
-          <button class="btn btn-danger btn-sm" onclick="resetMyProgress()">Reset My SOP Progress</button>
+          ${!isManComm() ? '<button class="btn btn-danger btn-sm" onclick="resetMyProgress()">Reset My SOP Progress</button>' : ''}
           <button class="btn btn-danger btn-sm" onclick="confirmClearAllData()">🗑 Clear All Data</button>
           <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign Out</button>
         </div>
@@ -2969,6 +3329,8 @@ function updateTimeBadge() {
 // ── MAIN RENDER ──
 function renderTimeLog() {
   if (TL_INTERVAL) { clearInterval(TL_INTERVAL); TL_INTERVAL = null; }
+  // ManComm always oversees — force team view, never personal sheet
+  if (isManComm()) TL_VIEW = 'team';
   const canViewAll = perms('canViewPerformance');
   const activeTimer = getActiveTimer();
   const allLogs = getTLogs();
@@ -2990,10 +3352,10 @@ function renderTimeLog() {
     if (!seenRows.has(key)) {
       seenRows.add(key);
       const acc = l.accountId === NB_ACCOUNT_ID ? NB_ACCOUNT : visAccounts.find(a => a.id === l.accountId);
-      const sop = getCurrentSOP(l.accountId);
-      const step = sop.find(s => String(s.step)===String(l.stepId));
-      const isBill = step ? step.billable !== false : (l.accountId !== NB_ACCOUNT_ID);
-      rowSet.push({ accountId:l.accountId, accountName:l.accountName, accColor:acc?.color||'var(--accent)', stepId:l.stepId, stepName:l.stepName, phaseNum:step?.phaseNum||4, billable:isBill });
+      const task = TL_TASKS.find(t => t.id === l.stepId);
+      const isBill = task ? task.billable : tlIsBillable(l);
+      const cat = task?.category || (isBill ? 'Billable' : 'Non-Billable');
+      rowSet.push({ accountId:l.accountId, accountName:l.accountName, accColor:acc?.color||'var(--accent)', stepId:l.stepId, stepName:task?.label||l.stepName, category:cat, billable:isBill });
     }
   });
 
@@ -3045,20 +3407,24 @@ function renderTimeLog() {
     <button class="btn btn-ghost btn-sm" onclick="TL_WEEK_OFFSET++;renderTimeLog()">Next ▶</button>
     ${TL_WEEK_OFFSET===0?'<span class="chip" style="font-size:10px;margin-left:2px">This Week</span>':`<button class="btn btn-ghost btn-sm" onclick="TL_WEEK_OFFSET=0;renderTimeLog()">This Week</button>`}
     <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
-      ${canViewAll ? `
+      ${isManComm() ? `
+        <span style="font-size:11px;color:var(--red);background:rgba(240,75,75,0.07);border:1px solid rgba(240,75,75,0.2);border-radius:20px;padding:3px 10px">🏢 Oversight View — All Teams</span>
+        <button class="btn btn-sm ${TL_VIEW==='team'?'btn-primary':'btn-ghost'}" onclick="TL_VIEW='team';renderTimeLog()">Team View</button>` :
+      canViewAll ? `
         <button class="btn btn-sm ${TL_VIEW==='mine'?'btn-primary':'btn-ghost'}" onclick="TL_VIEW='mine';renderTimeLog()">My Sheet</button>
         <button class="btn btn-sm ${TL_VIEW==='team'?'btn-primary':'btn-ghost'}" onclick="TL_VIEW='team';renderTimeLog()">Team View</button>` : ''}
       <button class="btn btn-ghost btn-sm" onclick="exportTimeLogs()">↓ CSV</button>
     </div>
   </div>
 
-  <!-- MAIN SHEET TABLE -->
+  <!-- MAIN SHEET TABLE — hidden for ManComm (they get dashboard only) -->
+  ${isManComm() ? '' : `
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;overflow-x:auto">
 
     <!-- Totals strip — 3 rows: Total | Billable | Non-Billable -->
     ${(() => {
-      const billMs = weekLogs.filter(l => { const s = DEFAULT_SOP.find(x=>String(x.step)===String(l.stepId)); return s ? s.billable!==false : l.accountId!==NB_ACCOUNT_ID; }).reduce((s,l)=>s+(l.durationMs||0),0);
-      const nbMs   = weekLogs.filter(l => { const s = DEFAULT_SOP.find(x=>String(x.step)===String(l.stepId)); return s ? s.billable===false : l.accountId===NB_ACCOUNT_ID; }).reduce((s,l)=>s+(l.durationMs||0),0);
+      const billMs = weekLogs.filter(l => tlIsBillable(l)).reduce((s,l)=>s+(l.durationMs||0),0);
+      const nbMs   = weekLogs.filter(l => !tlIsBillable(l)).reduce((s,l)=>s+(l.durationMs||0),0);
       const billPct = totalWeekMs>0 ? (billMs/totalWeekMs*100).toFixed(1) : '0.0';
       const nbPct   = totalWeekMs>0 ? (nbMs/totalWeekMs*100).toFixed(1)   : '0.0';
 
@@ -3103,10 +3469,10 @@ function renderTimeLog() {
 
       return totalRow +
         makeRow(`✦ Billable ${billPct}%`, 'var(--green)',
-          l => { const s=DEFAULT_SOP.find(x=>String(x.step)===String(l.stepId)); return s?s.billable!==false:l.accountId!==NB_ACCOUNT_ID; },
+          l => tlIsBillable(l),
           billMs, 'var(--green)') +
         makeRow(`◇ Non-Billable ${nbPct}%`, 'var(--red)',
-          l => { const s=DEFAULT_SOP.find(x=>String(x.step)===String(l.stepId)); return s?s.billable===false:l.accountId===NB_ACCOUNT_ID; },
+          l => !tlIsBillable(l),
           nbMs, 'var(--red)');
     })()}
 
@@ -3146,7 +3512,7 @@ function renderTimeLog() {
         </select>
         <select class="tl-inline-sel" id="nr-task" style="font-size:11px;color:var(--text2)">
           <option value="">Select task…</option>
-          ${renderTaskOptions(DEFAULT_SOP)}
+          ${renderTLTaskOptions()}
         </select>
       </div>
       ${days.map(d => {
@@ -3193,12 +3559,15 @@ function renderTimeLog() {
     </div>
   </div>
 
-  ${canViewAll && TL_VIEW==='team' ? renderTeamTimeSummary(days, weekKeys) : ''}
+  ${isManComm()
+    ? renderTeamTimeSummary(days, weekKeys)
+    : canViewAll && TL_VIEW==='team' ? renderTeamTimeSummary(days, weekKeys) : ''}
+  `}
 
   <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
-    <button class="btn btn-danger btn-sm" onclick="clearTimeLogs()">Clear My Logs</button>
-    <span style="font-size:11px;color:var(--text3)">Total this week: <strong style="color:var(--text2)">${fmtMins(totalWeekMs)}</strong></span>
-    <span style="font-size:11px;color:var(--text3);margin-left:8px">💡 Click a cell to log time · Tab to move right · Enter to save</span>
+    ${!isManComm() ? `<button class="btn btn-danger btn-sm" onclick="clearTimeLogs()">Clear My Logs</button>` : ''}
+    ${!isManComm() ? `<span style="font-size:11px;color:var(--text3)">Total this week: <strong style="color:var(--text2)">${fmtMins(totalWeekMs)}</strong></span>` : ''}
+    ${!isManComm() ? `<span style="font-size:11px;color:var(--text3);margin-left:8px">💡 Click a cell to log time · Tab to move right · Enter to save</span>` : ''}
   </div>`;
 
   if (activeTimer) {
@@ -3294,28 +3663,169 @@ function renderTLRows(rowSet, days, weekLogs, showUserId, labelW, colW) {
 
 function renderTeamTimeSummary(days, weekKeys) {
   const allLogs = getTLogs().filter(l => weekKeys.includes(l.dateKey));
-  const byMember = {};
-  allLogs.forEach(l => {
-    if (!byMember[l.userId]) byMember[l.userId] = { name:l.userName, role:l.userRole, total:0, entries:0 };
-    byMember[l.userId].total += l.durationMs||0;
-    byMember[l.userId].entries++;
+  // Exclude ManComm from operational tracking
+  const opLogs = allLogs.filter(l => {
+    const member = STATE.team.find(m => m.id === l.userId);
+    return !member || !MANCOMM_ROLES.includes(member.role);
   });
-  const maxMs = Math.max(...Object.values(byMember).map(m=>m.total), 1);
-  return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-top:16px">
-    <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700">Team Time This Week</div>
-    <table class="timelog-summary-table">
-      <thead><tr><th>Member</th><th>Role</th><th>Logged</th><th>Entries</th><th>Distribution</th></tr></thead>
-      <tbody>${Object.values(byMember).length===0
-        ? '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text3)">No entries from team this week</td></tr>'
-        : Object.values(byMember).sort((a,b)=>b.total-a.total).map(m=>`<tr>
-          <td style="color:var(--text);font-weight:500">${m.name}</td>
-          <td style="font-size:11px;color:var(--text2)">${m.role}</td>
-          <td style="font-family:var(--mono);color:var(--accent2)">${fmtMins(m.total)}</td>
-          <td>${m.entries}</td>
-          <td><div class="tl-bar-wrap"><div class="tl-bar-fill" style="width:${Math.round(m.total/maxMs*100)}%"></div></div></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>
+
+  const totalMs   = opLogs.reduce((s,l)=>s+(l.durationMs||0),0);
+  const billMs    = opLogs.filter(l=>tlIsBillable(l)).reduce((s,l)=>s+(l.durationMs||0),0);
+  const nbMs      = opLogs.filter(l=>!tlIsBillable(l)).reduce((s,l)=>s+(l.durationMs||0),0);
+  const billPct   = totalMs>0 ? Math.round(billMs/totalMs*100) : 0;
+  const nbPct     = totalMs>0 ? Math.round(nbMs/totalMs*100) : 0;
+
+  // Per-member breakdown
+  const byMember = {};
+  opLogs.forEach(l => {
+    if (!byMember[l.userId]) byMember[l.userId] = { name:l.userName||'Unknown', role:l.userRole||'', total:0, bill:0, nb:0 };
+    byMember[l.userId].total += l.durationMs||0;
+    if (tlIsBillable(l)) byMember[l.userId].bill += l.durationMs||0;
+    else byMember[l.userId].nb += l.durationMs||0;
+  });
+  const memberRows = Object.values(byMember).sort((a,b)=>b.total-a.total);
+  const maxMemberMs = Math.max(...memberRows.map(m=>m.total),1);
+
+  // Per-task category breakdown
+  const byCat = {};
+  opLogs.forEach(l => {
+    const task = TL_TASKS.find(t=>t.id===l.stepId);
+    const cat = task?.category || (tlIsBillable(l) ? 'Billable' : 'Non-Billable');
+    if (!byCat[cat]) byCat[cat] = { total:0, billable: task?.billable ?? tlIsBillable(l) };
+    byCat[cat].total += l.durationMs||0;
+  });
+  const catRows = Object.entries(byCat).sort((a,b)=>b[1].total-a[1].total);
+  const maxCatMs = Math.max(...catRows.map(([,v])=>v.total),1);
+
+  // Per-team breakdown
+  const byTeam = {};
+  opLogs.forEach(l => {
+    const member = STATE.team.find(m=>m.id===l.userId);
+    const teamId = member?.teamId || 'unassigned';
+    const teamName = STATE.teams?.find(t=>t.id===teamId)?.name || (teamId==='unassigned'?'Unassigned':teamId);
+    if (!byTeam[teamId]) byTeam[teamId] = { name:teamName, total:0, bill:0, nb:0 };
+    byTeam[teamId].total += l.durationMs||0;
+    if (tlIsBillable(l)) byTeam[teamId].bill += l.durationMs||0;
+    else byTeam[teamId].nb += l.durationMs||0;
+  });
+  const teamRows = Object.values(byTeam).sort((a,b)=>b.total-a.total);
+
+  return `
+  <!-- ══ MANCOMM TIME DASHBOARD ══ -->
+  <div style="margin-top:20px">
+
+    <!-- Org-wide KPI Cards -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Total Hours Logged</div>
+        <div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--accent2)">${fmtMins(totalMs)}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">All operational staff this week</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">✦ Billable</div>
+        <div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--green)">${fmtMins(billMs)}</div>
+        <div style="margin-top:6px">
+          <div style="background:var(--bg4);border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:${billPct}%;height:100%;background:var(--green);border-radius:3px"></div>
+          </div>
+          <div style="font-size:11px;color:var(--green);margin-top:3px">${billPct}% of total</div>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">◇ Non-Billable</div>
+        <div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--red)">${fmtMins(nbMs)}</div>
+        <div style="margin-top:6px">
+          <div style="background:var(--bg4);border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:${nbPct}%;height:100%;background:var(--red);border-radius:3px"></div>
+          </div>
+          <div style="font-size:11px;color:var(--red);margin-top:3px">${nbPct}% of total</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+
+      <!-- By Task Category -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text)">By Task Category</div>
+        <div style="padding:12px 16px">
+          ${catRows.length===0
+            ? '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px 0">No entries this week</div>'
+            : catRows.map(([cat,v])=>`
+              <div style="margin-bottom:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+                  <span style="font-size:11px;font-weight:600;color:${v.billable?'var(--text)':'var(--text2)'}">${v.billable?'✦':'◇'} ${cat}</span>
+                  <span style="font-size:11px;font-family:var(--mono);color:${v.billable?'var(--green)':'var(--red)'}">${fmtMins(v.total)}</span>
+                </div>
+                <div style="background:var(--bg4);border-radius:3px;height:5px;overflow:hidden">
+                  <div style="width:${Math.round(v.total/maxCatMs*100)}%;height:100%;background:${v.billable?'var(--green)':'var(--red)'};border-radius:3px"></div>
+                </div>
+              </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- By Team -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text)">By Team</div>
+        <div style="padding:12px 16px">
+          ${teamRows.length===0
+            ? '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px 0">No entries this week</div>'
+            : teamRows.map(t=>`
+              <div style="margin-bottom:12px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                  <span style="font-size:11px;font-weight:600;color:var(--text)">${t.name}</span>
+                  <span style="font-size:11px;font-family:var(--mono);color:var(--accent2)">${fmtMins(t.total)}</span>
+                </div>
+                <div style="display:flex;gap:4px;margin-bottom:3px">
+                  <span style="font-size:10px;color:var(--green)">✦ ${fmtMins(t.bill)}</span>
+                  <span style="font-size:10px;color:var(--text3)">·</span>
+                  <span style="font-size:10px;color:var(--red)">◇ ${fmtMins(t.nb)}</span>
+                </div>
+                <div style="background:var(--bg4);border-radius:3px;height:5px;overflow:hidden;display:flex">
+                  ${t.total>0?`<div style="width:${Math.round(t.bill/t.total*100)}%;height:100%;background:var(--green)"></div><div style="width:${Math.round(t.nb/t.total*100)}%;height:100%;background:var(--red)"></div>`:''}
+                </div>
+              </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- Per-Member Table -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text)">Individual Staff — This Week</div>
+      ${memberRows.length===0
+        ? '<div style="padding:24px;text-align:center;color:var(--text3);font-size:13px">No time entries from team this week</div>'
+        : `<table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr style="background:var(--bg3)">
+                <th style="padding:8px 16px;font-size:10px;font-weight:700;color:var(--text3);text-align:left;border-bottom:1px solid var(--border)">MEMBER</th>
+                <th style="padding:8px 12px;font-size:10px;font-weight:700;color:var(--text3);text-align:left;border-bottom:1px solid var(--border)">ROLE</th>
+                <th style="padding:8px 12px;font-size:10px;font-weight:700;color:var(--green);text-align:right;border-bottom:1px solid var(--border)">✦ BILLABLE</th>
+                <th style="padding:8px 12px;font-size:10px;font-weight:700;color:var(--red);text-align:right;border-bottom:1px solid var(--border)">◇ NON-BILL</th>
+                <th style="padding:8px 12px;font-size:10px;font-weight:700;color:var(--accent2);text-align:right;border-bottom:1px solid var(--border)">TOTAL</th>
+                <th style="padding:8px 16px 8px 8px;font-size:10px;font-weight:700;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);min-width:120px">SPLIT</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${memberRows.map((m,i)=>`
+                <tr style="${i%2===0?'background:var(--bg2)':'background:var(--bg3)'}">
+                  <td style="padding:9px 16px;font-size:12px;font-weight:600;color:var(--text)">${m.name}</td>
+                  <td style="padding:9px 12px;font-size:11px;color:var(--text2)">${m.role}</td>
+                  <td style="padding:9px 12px;font-size:12px;font-family:var(--mono);color:var(--green);text-align:right">${m.bill>0?fmtMins(m.bill):'—'}</td>
+                  <td style="padding:9px 12px;font-size:12px;font-family:var(--mono);color:var(--red);text-align:right">${m.nb>0?fmtMins(m.nb):'—'}</td>
+                  <td style="padding:9px 12px;font-size:13px;font-family:var(--mono);font-weight:700;color:var(--accent2);text-align:right">${fmtMins(m.total)}</td>
+                  <td style="padding:9px 16px 9px 8px">
+                    <div style="background:var(--bg4);border-radius:3px;height:6px;overflow:hidden;display:flex;min-width:80px">
+                      ${m.total>0?`
+                        <div title="Billable: ${fmtMins(m.bill)}" style="width:${Math.round(m.bill/m.total*100)}%;height:100%;background:var(--green)"></div>
+                        <div title="Non-Billable: ${fmtMins(m.nb)}" style="width:${Math.round(m.nb/m.total*100)}%;height:100%;background:var(--red)"></div>
+                      `:''} 
+                    </div>
+                    <div style="font-size:9px;color:var(--text3);margin-top:2px">${m.total>0?Math.round(m.bill/m.total*100)+'% bill':'—'}</div>
+                  </td>
+                </tr>`).join('')}
+            </tbody>
+          </table>`}
+    </div>
   </div>`;
 }
 
@@ -3370,10 +3880,9 @@ function tlCellKey(event, input) {
 
 // ── NEW ROW (inline entry at bottom) ──────────────────────────────────
 function nrUpdateTasks() {
-  const accId = document.getElementById('nr-acc')?.value;
-  const sop = getCurrentSOP(accId);
+  // Tasks are fixed TL_TASKS — not SOP-dependent
   const sel = document.getElementById('nr-task');
-  if (sel) sel.innerHTML = '<option value="">Select task…</option>' + renderTaskOptions(sop);
+  if (sel) sel.innerHTML = '<option value="">Select task…</option>' + renderTLTaskOptions();
 }
 
 function nrAutoSelect(input) {
@@ -3397,15 +3906,14 @@ function nrSaveCell(input, dk) {
   const taskVal = document.getElementById('nr-task')?.value;
   if (!taskVal) { showNotif('Select a task first', 'info'); input.value=''; return; }
   const acc = accId === NB_ACCOUNT_ID ? NB_ACCOUNT : STATE.accounts.find(a=>a.id===accId);
-  const sop = getCurrentSOP(accId);
-  const step = sop.find(s=>String(s.step)===String(taskVal)) || DEFAULT_SOP.find(s=>String(s.step)===String(taskVal));
-  if (!step) { showNotif('Task not found', 'info'); return; }
+  const task = TL_TASKS.find(t => t.id === taskVal);
+  if (!task) { showNotif('Task not found', 'info'); return; }
 
-  tlAddEntry(STATE.currentUser.id, step.step, step.sub, accId||null, acc?acc.name:'General', minsToMs(mins), dk);
+  tlAddEntry(STATE.currentUser.id, task.id, task.label, accId||null, acc?acc.name:'General', minsToMs(mins), dk);
   input.value = '';
   input.style.background='var(--green-bg)';
   setTimeout(()=>{ input.style.background=''; }, 600);
-  logActivity('⏱', `logged ${mins}m — ${step.sub} · ${acc?acc.name:'General'}`);
+  logActivity('⏱', `logged ${mins}m — ${task.label} · ${acc?acc.name:'General'}`);
   updateTimeBadge();
   refreshTotalsOnly();
   // If this was a new account+task combo, re-render to show the row
@@ -3416,7 +3924,7 @@ function nrClearRow() {
   const sel1 = document.getElementById('nr-acc');
   const sel2 = document.getElementById('nr-task');
   if (sel1) sel1.selectedIndex = 0;
-  if (sel2) sel2.innerHTML = '<option value="">Select task…</option>' + renderTaskOptions(DEFAULT_SOP);
+  if (sel2) sel2.innerHTML = '<option value="">Select task…</option>' + renderTLTaskOptions();
   document.querySelectorAll('#tl-new-row-wrap input[type=text]').forEach(i=>i.value='');
 }
 
@@ -3451,40 +3959,35 @@ function openTimerPicker() {
   const timerAccounts = getTimesheetAccounts();
   openModal('Start Timer', 'Select what you are working on', `
     <div class="input-group"><label>Account</label>
-      <select id="tp-acc" onchange="updateTimerStepList()">
-        <option value="">— Select Account —</option>
-        ${timerAccounts.map(a=>`<option value="${a.id}">${a.name}</option>`).join('')}
+      <select id="tp-acc">
+        <option value="">— Select Account or Non-Billable —</option>
+        ${timerAccounts.filter(a=>a.id!==NB_ACCOUNT_ID).map(a=>`<option value="${a.id}">${a.name}</option>`).join('')}
+        <option value="${NB_ACCOUNT_ID}" style="color:var(--red)">◇ Non-Billable</option>
       </select>
     </div>
     <div class="input-group"><label>Task</label>
       <select id="tp-step">
-        ${renderTaskOptions(DEFAULT_SOP)}
+        <option value="">— Select Task —</option>
+        ${renderTLTaskOptions()}
       </select>
     </div>`,
     [{ label:'Cancel', ghost:true, action:'closeModal()' }, { label:'▶ Start Timer', action:'doStartTimerFromPicker()' }]);
 }
 
-function openTimerPickerForCell(accountId, stepId, stepName, accountName) {
-  closeModal();
-  startTimer(stepId, stepName, accountId, accountName);
-}
-
 function updateTimerStepList() {
-  const accId = document.getElementById('tp-acc')?.value;
-  const sop = getCurrentSOP(accId);
+  // Tasks are fixed — no per-account SOP dependency
   const sel = document.getElementById('tp-step');
-  if (sel) sel.innerHTML = renderTaskOptions(sop);
+  if (sel) sel.innerHTML = '<option value="">— Select Task —</option>' + renderTLTaskOptions();
 }
 
 function doStartTimerFromPicker() {
   const accId = document.getElementById('tp-acc')?.value||'';
-  const stepId = document.getElementById('tp-step')?.value;
-  const acc = STATE.accounts.find(a=>a.id===accId);
-  const sop = getCurrentSOP(accId);
-  const step = sop.find(s=>String(s.step)===String(stepId));
-  if (!stepId||!step) { showNotif('Select a task','info'); return; }
+  const taskId = document.getElementById('tp-step')?.value;
+  const acc = accId === NB_ACCOUNT_ID ? NB_ACCOUNT : STATE.accounts.find(a=>a.id===accId);
+  const task = TL_TASKS.find(t => t.id === taskId);
+  if (!taskId || !task) { showNotif('Select a task','info'); return; }
   closeModal();
-  startTimer(step.step, step.sub, accId||null, acc?acc.name:'General');
+  startTimer(task.id, task.label, accId||null, acc?acc.name:'General');
 }
 
 function exportTimeLogs() {
@@ -3492,9 +3995,10 @@ function exportTimeLogs() {
   const logs = canViewAll ? getTLogs() : getTLogs().filter(l=>l.userId===STATE.currentUser.id);
   const header = 'Date,Member,Role,Account,Task,Duration (min),Billable\n';
   const rows = logs.map(l => {
-    const sop = DEFAULT_SOP.find(s=>String(s.step)===String(l.stepId));
-    const billable = sop ? (sop.billable!==false?'Yes':'No') : 'Yes';
-    return [l.dateKey||'',l.userName||'',l.userRole||'',l.accountName||'',(l.stepName||'').replace(/,/g,' '),msToMins(l.durationMs),billable].join(',');
+    const task = TL_TASKS.find(t => t.id === l.stepId);
+    const billable = task ? (task.billable ? 'Yes' : 'No') : (tlIsBillable(l) ? 'Yes' : 'No');
+    const taskLabel = task ? task.label : (l.stepName || '');
+    return [l.dateKey||'',l.userName||'',l.userRole||'',l.accountName||'',taskLabel.replace(/,/g,' '),msToMins(l.durationMs),billable].join(',');
   }).join('\n');
   const blob = new Blob([header+rows],{type:'text/csv'});
   const url = URL.createObjectURL(blob);
@@ -3777,14 +4281,14 @@ function getUserLeaveOnDate(userId, dk) {
 // Analyst Managers can edit; ManComm can view (all roles)
 function canEditLeaves() {
   const r = STATE.currentUser?.role;
-  return ['Analyst Manager','Client Success Manager','COO','Operations Manager','HR Manager'].includes(r);
+  return ['HR Manager','Analyst Manager'].includes(r);
 }
 
 function canViewLeaves() { return true; } // everyone can view their own; managers see all
 
 function renderLeaveCalendar() {
   const canEdit = canEditLeaves();
-  const isHR = ['HR Manager','COO','Operations Manager'].includes(STATE.currentUser?.role);
+  const isHR = ['HR Manager','Analyst Manager'].includes(STATE.currentUser?.role);
   const leaves = getLeaves();
 
   // Determine which year/month to show
@@ -3799,9 +4303,11 @@ function renderLeaveCalendar() {
   const startDow = (firstDay.getDay() + 6) % 7; // Mon-based
   const daysInMonth = lastDay.getDate();
 
-  // Who to show – managers see all, analysts see self
+  // Who to show – ManComm sees all operational staff (not other ManComm), managers see team, analysts see self
   const visTeam = isManComm() ? STATE.team : getVisibleTeam();
-  const membersToShow = canEdit ? visTeam : visTeam.filter(m => m.id === STATE.currentUser.id);
+  const membersToShow = isManComm()
+    ? visTeam.filter(m => !MANCOMM_ROLES.includes(m.role)) // ManComm oversees operational staff only
+    : canEdit ? visTeam : visTeam.filter(m => m.id === STATE.currentUser.id);
 
   // Build a lookup: dateKey -> array of { member, leave }
   const leaveLookup = {};
@@ -3879,7 +4385,8 @@ function renderLeaveCalendar() {
   }
 
   document.getElementById('page-content').innerHTML = `
-    ${!canEdit ? '<div style="background:rgba(56,180,245,0.07);border:1px solid rgba(56,180,245,0.2);border-radius:var(--r);padding:8px 14px;font-size:12px;color:var(--blue);margin-bottom:16px">📅 You can view your own leave records. Contact your Analyst Manager to add or modify leaves.</div>' : ''}
+    ${isManComm() ? `<div style="background:rgba(240,75,75,0.07);border:1px solid rgba(240,75,75,0.2);border-radius:var(--r);padding:8px 14px;font-size:11px;color:var(--red);margin-bottom:12px;display:flex;align-items:center;gap:8px">🏢 <strong>ManComm Oversight</strong> — Viewing all operational staff leave. ManComm members are not tracked here.</div>` : ''}
+    ${!canEdit && !isManComm() ? '<div style="background:rgba(56,180,245,0.07);border:1px solid rgba(56,180,245,0.2);border-radius:var(--r);padding:8px 14px;font-size:12px;color:var(--blue);margin-bottom:16px">📅 You can view your own leave records. Contact your HR Manager or Analyst Manager to add or modify leaves.</div>' : ''}
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
       <button class="btn btn-ghost btn-sm" onclick="lcNav(-1)">◀</button>
       <div style="font-size:16px;font-weight:700;flex:1;min-width:150px">${monthName}</div>
@@ -4247,6 +4754,7 @@ function renderAccountView() {
   }
 
   document.getElementById('page-content').innerHTML = `
+    ${isManComm() ? `<div style="background:rgba(240,75,75,0.07);border:1px solid rgba(240,75,75,0.2);border-radius:var(--r);padding:8px 14px;font-size:11px;color:var(--red);margin-bottom:12px;display:flex;align-items:center;gap:8px">🏢 <strong>ManComm Oversight</strong> — You have full read access to this account. Operational actions (join, timelog) are for the assigned team.</div>` : ''}
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         ${avatarHTML}
@@ -4367,7 +4875,7 @@ function toggleShowArchived() {
 const TENOR_KEY = 'YOUR_TENOR_API_KEY'; // ⚠️ Replace with your Tenor API key from tenor.com/developers
 
 let CH_STATE = {
-  activeChannelId: 'ch_general',
+  activeChannelId: null,
   channels: [],
   messages: [],
   realtimeSub: null,
@@ -4377,6 +4885,7 @@ let CH_STATE = {
   gifResults: [],
   uploadedFile: null,
   uploadedFileUrl: null,
+  pendingGif: null,
 };
 
 const EMOJI_LIST = ['👍','❤️','😂','🎉','🔥','😮','👏','💯','✅','🚀','😍','🤔','👀','💪','🙏','😎','⭐','💡','📌','🎯','😅','🥳','😭','😤','🤝','💬','📊','📁','🗓','⏱'];
@@ -4387,24 +4896,43 @@ async function renderChannels() {
   el.style.overflow = 'hidden';
   el.innerHTML = `<div class="channels-layout">
     <div class="ch-sidebar">
-      <div class="ch-sidebar-header">
-        Channels
-        <button class="ch-new-channel-btn" onclick="openNewChannelModal()" title="New channel">+</button>
+      <div class="ch-workspace-header">
+        <span class="ch-workspace-name">Rythmos</span>
+        <button class="ch-section-add" onclick="openNewChannelModal()" title="New channel" style="font-size:20px;font-weight:300">+</button>
       </div>
-      <div class="ch-list" id="ch-list"></div>
+      <div class="ch-sidebar-body">
+        <div class="ch-section-label">
+          <span>Channels</span>
+          <button class="ch-section-add" onclick="openNewChannelModal()" title="Add channel">+</button>
+        </div>
+        <div id="ch-list-general"></div>
+        <div class="ch-section-label" style="margin-top:6px">
+          <span>Team Channels</span>
+          <button class="ch-section-add" onclick="openNewChannelModal()" title="Add channel">+</button>
+        </div>
+        <div id="ch-list-team"></div>
+        <div class="ch-section-label" style="margin-top:6px">
+          <span>Account Channels</span>
+          <button class="ch-section-add" onclick="openNewChannelModal()" title="Add channel">+</button>
+        </div>
+        <div id="ch-list-accounts"></div>
+      </div>
     </div>
     <div class="ch-main">
       <div class="ch-header" id="ch-header">
-        <span style="font-size:18px">#</span>
-        <span class="ch-header-name" id="ch-header-name">Loading…</span>
-        <span class="ch-header-desc" id="ch-header-desc"></span>
-        <div style="margin-left:auto;display:flex;gap:8px" id="ch-header-actions"></div>
+        <button id="ch-mobile-back" style="display:none;background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;padding:0 8px 0 0;flex-shrink:0" onclick="chShowSidebar()" title="Back to channels">‹</button>
+        <span class="ch-header-icon" id="ch-header-icon">#</span>
+        <span class="ch-header-name" id="ch-header-name">Select a channel</span>
+        <span class="ch-header-sep" id="ch-header-sep" style="display:none">|</span>
+        <span class="ch-header-desc" id="ch-header-desc" style="display:none"></span>
+        <div class="ch-header-actions" id="ch-header-actions"></div>
       </div>
-      <div class="ch-messages" id="ch-messages"><div class="empty">Loading messages…</div></div>
+      <div class="ch-messages" id="ch-messages"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--text3)"><div style="font-size:40px">💬</div><div style="font-size:14px">Select a channel to start</div></div></div>
       <div class="ch-typing" id="ch-typing"></div>
-      <div class="ch-composer">
-        <div class="ch-composer-box">
-          <textarea class="ch-composer-input" id="ch-input" placeholder="Message #general…" rows="1"
+      <div class="ch-composer" id="ch-composer" style="display:none">
+        <div class="ch-composer-wrap">
+          <div id="ch-reply-bar" class="ch-reply-bar" style="display:none"></div>
+          <textarea class="ch-composer-input" id="ch-input" placeholder="Message #…" rows="1"
             onkeydown="chInputKeydown(event)" oninput="chInputResize(this)"></textarea>
           <div class="ch-composer-toolbar">
             <div style="position:relative">
@@ -4414,26 +4942,39 @@ async function renderChannels() {
               </div>
             </div>
             <div style="position:relative">
-              <button class="ch-toolbar-btn" onclick="toggleGifPicker()" title="GIF">GIF</button>
+              <button class="ch-toolbar-btn" onclick="toggleGifPicker()" title="GIF" style="font-size:12px;font-weight:700;letter-spacing:-0.5px">GIF</button>
               <div class="gif-picker" id="gif-picker" style="display:none">
                 <input class="gif-search" id="gif-search-input" placeholder="Search GIFs…" oninput="searchGifs(this.value)" onfocus="if(!this.value)searchGifs('trending')">
-                <div class="gif-grid" id="gif-grid"><div style="color:var(--text3);font-size:12px;text-align:center;padding:20px;grid-column:span 2">Search for GIFs…</div></div>
+                <div class="gif-grid" id="gif-grid"><div style="color:var(--text3);font-size:12px;text-align:center;padding:20px;grid-column:span 2">Search for GIFs above…</div></div>
               </div>
             </div>
             <button class="ch-toolbar-btn" onclick="document.getElementById('ch-file-input').click()" title="Attach file">📎</button>
             <input type="file" id="ch-file-input" style="display:none" onchange="handleFileAttach(event)">
-            <span id="ch-file-preview" style="font-size:11px;color:var(--accent2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+            <span id="ch-file-preview" style="font-size:11px;color:var(--accent2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
             <button class="ch-send-btn" id="ch-send-btn" onclick="sendMessage()">Send ↑</button>
           </div>
         </div>
-        <div id="ch-reply-bar" style="display:none;font-size:11px;color:var(--text3);padding:4px 4px 0;display:flex;align-items:center;gap:8px"></div>
       </div>
     </div>
   </div>`;
 
   await loadChannels();
   renderChannelList();
-  await switchChannel(CH_STATE.activeChannelId);
+  const firstCh = CH_STATE.channels[0];
+  if (firstCh) {
+    await switchChannel(CH_STATE.activeChannelId || firstCh.id);
+  } else {
+    // No channels yet — show empty state
+    const msgEl = document.getElementById('ch-messages');
+    const headerName = document.getElementById('ch-header-name');
+    if (headerName) headerName.textContent = 'No channels yet';
+    if (msgEl) msgEl.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;color:var(--text3)">
+        <div style="font-size:48px">💬</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text2)">No channels yet</div>
+        <div style="font-size:13px;max-width:280px;text-align:center;line-height:1.6">Create your first channel by clicking the <strong>+</strong> button in the sidebar.</div>
+      </div>`;
+  }
   setupRealtimeMessages();
   document.addEventListener('click', closePickersOnOutsideClick, {once:false});
 }
@@ -4442,33 +4983,43 @@ async function loadChannels() {
   try {
     const { data } = await supa.from('channels').select('*').order('is_general', {ascending:false});
     if (data) CH_STATE.channels = data;
+    else CH_STATE.channels = [];
   } catch(e) {
-    // fallback static channels
-    CH_STATE.channels = [
-      {id:'ch_general',name:'general',description:'Company-wide',team_id:null,is_general:true},
-      {id:'ch_random',name:'random',description:'Off-topic fun 🎉',team_id:null,is_general:false},
-    ];
+    CH_STATE.channels = DB.get('channels', []);
   }
 }
 
 function renderChannelList() {
-  const el = document.getElementById('ch-list'); if(!el) return;
   const myTeamId = STATE.currentUser?.teamId;
   const uid = STATE.currentUser?.id;
-  const myAccountIds = new Set((STATE.accounts||[]).filter(a=>(a.analysts||[]).includes(uid)).map(a=>a.id));
+  const visibleAccountIds = new Set(getVisibleAccounts().map(a => a.id));
   const generalChannels = CH_STATE.channels.filter(c => !c.team_id && !c.account_id);
   const teamChannels = CH_STATE.channels.filter(c => c.team_id && !c.account_id && (isManComm() || c.team_id === myTeamId));
-  const accountChannels = CH_STATE.channels.filter(c => c.account_id && (isManComm() || perms('canManageAccounts') || myAccountIds.has(c.account_id)));
+  const accountChannels = CH_STATE.channels.filter(c => c.account_id && (isManComm() || visibleAccountIds.has(c.account_id)));
   const chItem = c => {
     const acc = c.account_id ? (STATE.accounts||[]).find(a=>a.id===c.account_id) : null;
-    const icon = c.account_id ? '\u{1F3E2}' : '#';
+    const icon = c.account_id ? '🏢' : '#';
     const label = acc ? acc.name : c.name;
-    return `<div class="ch-item ${c.id===CH_STATE.activeChannelId?'active':''}" onclick="switchChannel('${c.id}')"><span class="ch-item-hash" style="font-size:${c.account_id?'11px':'14px'}">${icon}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${label}</span></div>`;
+    const unread = (CH_STATE.unreadCounts||{})[c.id] || 0;
+    return `<div class="ch-item ${c.id===CH_STATE.activeChannelId?'active':''}" onclick="switchChannel('${c.id}')">
+      <span class="ch-item-hash" style="font-size:${c.account_id?'11px':'14px'}">${icon}</span>
+      <span class="ch-item-name">${label}</span>
+      ${unread > 0 ? `<span class="ch-unread-badge">${unread}</span>` : ''}
+    </div>`;
   };
-  let html = generalChannels.map(chItem).join('');
-  if (teamChannels.length) html += '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:10px 8px 4px">Team</div>' + teamChannels.map(chItem).join('');
-  if (accountChannels.length) html += '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:10px 8px 4px">Accounts</div>' + accountChannels.map(chItem).join('');
-  el.innerHTML = html || '<div style="color:var(--text3);font-size:12px;padding:8px">No channels yet.</div>';
+  const elGen = document.getElementById('ch-list-general');
+  const elTeam = document.getElementById('ch-list-team');
+  const elAcc = document.getElementById('ch-list-accounts');
+  if (elGen) elGen.innerHTML = generalChannels.map(chItem).join('') || '<div style="color:var(--text3);font-size:11px;padding:4px 14px">No channels yet</div>';
+  if (elTeam) elTeam.innerHTML = teamChannels.map(chItem).join('') || '<div style="color:var(--text3);font-size:11px;padding:4px 14px">None</div>';
+  if (elAcc) elAcc.innerHTML = accountChannels.map(chItem).join('') || '<div style="color:var(--text3);font-size:11px;padding:4px 14px">None</div>';
+}
+
+function chShowSidebar() {
+  const sidebar = document.querySelector('.ch-sidebar');
+  const main = document.querySelector('.ch-main');
+  if (sidebar) sidebar.style.display = '';
+  if (main) main.style.display = 'none';
 }
 
 async function switchChannel(id) {
@@ -4483,6 +5034,13 @@ async function switchChannel(id) {
     document.getElementById('ch-header-desc').textContent = ch.description || '';
     const inp = document.getElementById('ch-input');
     if (inp) inp.placeholder = `Message #${ch.name}…`;
+  }
+  // On mobile: hide sidebar, show main
+  if (window.innerWidth <= 420) {
+    const sidebar = document.querySelector('.ch-sidebar');
+    const main = document.querySelector('.ch-main');
+    if (sidebar) sidebar.style.display = 'none';
+    if (main) main.style.display = 'flex';
   }
   await loadMessages(id);
 }
@@ -4829,20 +5387,19 @@ function openNewChannelModal() {
 }
 
 async function doCreateChannel() {
-  const name = document.getElementById('new-ch-name')?.value?.trim();
+  const name = document.getElementById('new-ch-name')?.value?.trim()?.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'');
   const desc = document.getElementById('new-ch-desc')?.value?.trim();
   const teamId = document.getElementById('new-ch-team')?.value || null;
   if (!name) { showNotif('Channel name required', 'error'); return; }
   const accountId = document.getElementById('new-ch-account')?.value || null;
-  const ch = { id: 'ch_'+Date.now(), name, description: desc||'', team_id: teamId, account_id: accountId, is_general: false, created_by: STATE.currentUser?.id };
-  try {
-    await supa.from('channels').insert(ch);
-    CH_STATE.channels.push(ch);
-    renderChannelList();
-    closeModal();
-    switchChannel(ch.id);
-    showNotif('#'+name+' created!', 'success');
-  } catch(e) { showNotif('Could not create channel', 'error'); }
+  const ch = { id: 'ch_'+Date.now(), name, description: desc||'', team_id: teamId, account_id: accountId, is_general: false, created_by: STATE.currentUser?.id, created_at: new Date().toISOString() };
+  CH_STATE.channels.push(ch);
+  DB.set('channels', CH_STATE.channels);
+  try { await supa.from('channels').insert(ch); } catch(e) {}
+  renderChannelList();
+  closeModal();
+  await switchChannel(ch.id);
+  showNotif('#'+name+' created!', 'success');
 }
 
 // Cleanup realtime when navigating away (inlined into showPage above)
@@ -4851,13 +5408,10 @@ async function doCreateChannel() {
 (async () => {
   applyTheme();
   const loader = showDBLoader();
-  const bar = loader.querySelector('#db-loader-bar');
-  if (bar) setTimeout(() => bar.style.width = '60%', 50);
 
-  // Load all persisted data from Artifact Storage into cache
+  // Load all persisted data from Supabase into cache
   await DB.loadAll();
 
-  if (bar) bar.style.width = '90%';
   loadState();
   hideDBLoader(loader);
 
@@ -4870,4 +5424,3 @@ async function doCreateChannel() {
 </script>
 </body>
 </html>
-
